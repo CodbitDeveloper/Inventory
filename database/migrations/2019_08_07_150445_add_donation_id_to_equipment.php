@@ -17,7 +17,7 @@ class AddDonationIdToEquipment extends Migration
             $table->string('donation_id')->nullable();
 
             $table->foreign('donation_id')->references('id')->on('donations')
-                  ->onUpdate('cascade')->onDelete('cascade');
+                  ->onUpdate('set null')->onDelete('set null');
         });
     }
 
