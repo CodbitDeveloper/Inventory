@@ -216,7 +216,7 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md-4">
                                                     <label><b>Equipment Category</b> <span class="text-danger">*</span></label>
-                                                    <select class="selectpicker col-sm-12" title="Category" data-style="form-control" name="asset_category_id">
+                                                    <select class="selectpicker col-sm-12" title="Category" data-style="form-control" name="admin_category_id">
                                                         @foreach($categories as $category)
                                                             <option value="{{$category->id}}" <?php if($equipment->admin_category_id == $category->id){echo 'selected';}?>>{{$category->name}}</option>
                                                         @endforeach
