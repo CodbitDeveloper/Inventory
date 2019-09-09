@@ -17,4 +17,9 @@ class PreventiveMaintenance extends Model
     {
         return $this->belongsTo('App\PmSchedule');
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'reported_by');
+    }
 }

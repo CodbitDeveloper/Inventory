@@ -106,7 +106,7 @@ class RequestsController extends Controller
          }
 
          if($work_request->save()) {
-             $user = User::where([['role', 'Admin'], ['hospital_id', $request->hospital_id]])->first();
+             $user = User::where([['role', 'Admin'], ['hospital_id', $request->hospital_id], ['id', '<>', $request->requested_by]])->first();
              if($request->requested_by != null){
                  $requester = $work_request->user()->first();
                  $name_of_requester = $requester->firstname.' '.$requester->lastname;
@@ -117,7 +117,7 @@ class RequestsController extends Controller
              $work_request->name_of_requester = $name_of_requester;
 
              if($user != null) {
-                $user->notify(new RequestReceived($work_request));
+                $user->notify(new RequestReceived($work_request)); 
              }
             
             return response()->json([
@@ -246,7 +246,9 @@ class RequestsController extends Controller
                 } else {
                     $requester = $work_request->user()->first();
                     //function to notify requester
-                    $requester->notify(new RequestStatus($work_request));
+                    if($requester->role != 'Admin') {
+                        $requester->notify(new RequestStatus($work_request));
+                    }
                 }
     
                 return response()->json([
@@ -295,7 +297,9 @@ class RequestsController extends Controller
             }else{
                 $requester = $work_request->user()->first();
                 //notify the user;
-                $requester->notify(new RequestStatus($work_request, 'Work order request had been declined'));
+                if($requester->role != 'Admin') {
+                    $requester->notify(new RequestStatus($work_request, 'Work order request had been declined'));
+                }
             }
 
             return response()->json([

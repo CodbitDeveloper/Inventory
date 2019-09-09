@@ -121,7 +121,7 @@ class PmScheduleController extends Controller
         $user = Auth::user();
 
         if($user->role == 'Admin' || $user->role == 'Regular Technician') {
-            $pmSchedule = PmSchedule::with("preventive_maintenances", "priority", "department", "unit", "asset_category", "assets", "actions")->where("id", $pmSchedule)->first();
+            $pmSchedule = PmSchedule::with("preventive_maintenances", "preventive_maintenances.user", "priority", "department", "unit", "asset_category", "assets", "actions")->where("id", $pmSchedule)->first();
             $hospital = Hospital::where("id", $user->hospital_id)->with("priorities", "asset_categories", "assets", "departments", "departments.units")->first();
             return view("pm-type-details", compact("pmSchedule", "hospital", "user"));
         } else {

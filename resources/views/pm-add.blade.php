@@ -140,6 +140,7 @@
                 presentNotification("Make sure all tasks are checked out before you continue", "danger", "top", "right");
             }else{
                 data.append("pm_schedule_id", "{{$pmSchedule->id}}");
+                data.append("recorded_by", "{{Auth::user()->id}}");
 
                 const success = (data) => {
                     setTimeout(() => {

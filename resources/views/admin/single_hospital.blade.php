@@ -65,6 +65,7 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>Code</th>
+                                                                <th>Name</th>
                                                                 <th>Serial No.</th>
                                                                 <th>Model No.</th>
                                                                 <th>Manufacturer</th>
@@ -75,6 +76,7 @@
                                                         <tfoot>
                                                             <tr>
                                                                 <th>Code</th>
+                                                                <th>Name</th>
                                                                 <th>Serial No.</th>
                                                                 <th>Model No.</th>
                                                                 <th>Manufacturer</th>
@@ -151,7 +153,7 @@
                 "success" : (data) => {
                     let table_data = [];
                     data.forEach(function(equipment, index){
-                        let temp = [equipment.asset_code, equipment.serial_number, equipment.model_number, equipment.manufacturer_name, equipment.status, equipment.availability, equipment.asset_category == null ? 'N/A' : equipment.asset_category.name];
+                        let temp = [equipment.asset_code, equipment.name, equipment.serial_number, equipment.model_number, equipment.manufacturer_name, equipment.status, equipment.availability, equipment.asset_category == null ? 'N/A' : equipment.asset_category.name];
                         table_data.push(temp);
                     });
                     equipment_table.rows.add(table_data).draw();

@@ -394,7 +394,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label><b>Details</b></label>
-                                            <textarea class="form-control" name="extra_notes">{{$work_order->details}}</textarea>
+                                            <textarea class="form-control" name="description">{{$work_order->description}}</textarea> 
                                         </div>
                                     </div>
                                     
@@ -711,7 +711,7 @@
                 if(data.length > 0){
                     let parts = [];
                     $.each(data, function(index, part){
-                        let temp = [part.name, part.pivot.quantity, `<a href="javascript:void(0)" class="text-12 text-info">Edit</a>&nbsp;&nbsp;<a href="javascript:void(0)" class="text-12 text-danger">Remove</a>`];
+                        let temp = [part.name, part.pivot.quantity, @if($work_order->is_complete == 1) `N/A` @else `<a href="javascript:void(0)" class="text-12 text-info">Edit</a>&nbsp;&nbsp;<a href="javascript:void(0)" class="text-12 text-danger">Remove</a>`@endif];
                         parts.push(temp);
                     });
                     parts_table.rows.add(parts).draw();

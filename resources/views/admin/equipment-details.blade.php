@@ -186,7 +186,7 @@
                                                         <div class="col-md-12 mt-4">
                                                             <div class="form-group">
                                                                 <label class="description-label">Reason</label>
-                                                                <textarea class="form-control" name="reason"></textarea>
+                                                                <textarea class="form-control" name="reason">{{$equipment->reason}}</textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -253,7 +253,7 @@
                                                 </div>
                                                 <div class="form-group col-md-4 col-sm-12">
                                                     <label><b>Type</b></label>
-                                                    <input type="text" class="form-control" name="manufacturer_name" value="{{$equipment->manufacturer_name}}"/>
+                                                    <input type="text" class="form-control" name="type" value="{{$equipment->type}}"/>
                                                 </div>
                                             </div>
                                             <div class="form-row">

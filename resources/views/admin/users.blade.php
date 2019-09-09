@@ -40,7 +40,7 @@
                                                             <th>First Name</th>
                                                             <th>Hospital</th>
                                                             <th>Role</th>
-                                                            <th>Username</th>
+                                                            <th>Email</th>
                                                         </tr>
                                                     </thead>
                                                     <tfoot>
@@ -49,7 +49,7 @@
                                                             <th>First Name</th>
                                                             <th>Hospital</th>
                                                             <th>Role</th>
-                                                            <th>Username</th>
+                                                            <th>Email</th>
                                                         </tr>
                                                     </tfoot>
                                                     <tbody>
@@ -61,7 +61,7 @@
                                                             <td>{{$user->firstname}}</td>
                                                             <td>{{$user->hospital->name}}</td>
                                                             <td>{{$user->role}}</td>
-                                                            <td>{{$user->username}}</td>
+                                                            <td>{{$user->email}}</td>
                                                         </tr>
                                                         @endforeach
                                                     </tbody>

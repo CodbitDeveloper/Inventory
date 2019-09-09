@@ -60,7 +60,7 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right">
                                                 <a class="dropdown-item" href="javascript:void(0)" onclick="editUser({{$user}})">Edit User</a>
-                                                <a class="dropdown-item" href="#">Reset Password</a>
+                                                <a class="dropdown-item" href="javascript:void(0)" onclick="resetPassword({{$user}})">Reset Password</a>
                                                 @if($user->active == 1)
                                                 <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="deactivateUser({{$user}})">Deactivate User</a>
                                                 @elseif($user->active == 0)
@@ -192,6 +192,27 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="reset-user-modal">
+        <div class="modal-dialog">
+            <div class="modal-content modal-lg">
+                <form method = "post" id="reset_password">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;<span class="sr-only">Close</span></button>
+                        <h6 class="heading">Reset password</h6>
+                    </div>
+                    <div class="modal-body">
+                        <p>You are about to reset <span id="user_password_reset"></span>'s password. Are you sure you want to continue?</p>
+                        <input type="hidden" id="reset_id" name="id"/>
+                    </div>
+                    <div class="modal-footer mt-4">
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-danger text-right pull-right">Reset Password</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     @endsection
     @section('scripts')
     <script src="{{asset('js/datatables.js')}}" type="text/javascript"></script>
@@ -303,6 +324,23 @@
 
             $("#activate-user-modal").modal("show");
         }
+
+        const resetPassword = (user) => {
+            $("#user_password_reset").html(`${user.firstname} ${user.lastname}`);
+            $("#reset_id").val(user.id);
+
+            $("#reset-user-modal").modal("show");
+        }
+
+        $("#reset_password").on("submit", function(e) {
+            e.preventDefault();
+
+            let btn = $(this).find('[type=submit]');
+            const id = $(this).find('[name=id]').val();
+
+            submit_form('/api/users/reset-password/'+id, 'put', null, undefined, btn, true);
+
+        });
 
         $("#deactivate_user").on("submit", function(e){
             e.preventDefault();

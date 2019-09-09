@@ -77,6 +77,7 @@ class PreventiveMaintenanceController extends Controller
         $preventiveMaintenance->action_taken   = $request->action_taken;
         $preventiveMaintenance->date_completed = date('Y-m-d', strtotime($request->date_completed));
         $preventiveMaintenance->is_completed = 2;
+        $preventiveMaintenance->reported_by = $request->reported_by;
 
         if($preventiveMaintenance->save()) {
             return response()->json([

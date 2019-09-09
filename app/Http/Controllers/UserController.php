@@ -77,7 +77,7 @@ class UserController extends Controller
             if(count(Mail::failures()) > 0) {
                 return response()->json([
                     'error' => true,
-                    'message' => 'Could not send the mail. Try again!'
+                    'message' => 'Could not send the email. Try again!'
                 ]);
             } else {
                 return response()->json([
@@ -327,5 +327,41 @@ class UserController extends Controller
             'message' => !$status ? 'User account updated!' : 'Could not update user account. Try again!'
             ]
         );
+    }
+
+    public function resetPassword(User $user)
+    {
+        $user->password = '123456789';
+
+        if($user->save()) {
+            $data = array("user" => $user);
+
+            $to_name = ucwords($user->firstname.' '.$user->lastname);
+            $to_email = $user->email;
+
+            Mail::send('email_templates.reset_password', $data, function($message) use($to_name, $to_email) {
+                $message->to($to_email, $to_name)
+                        ->subject('Password Reset');
+                $message->from('noreply@tynkerbox', 'TynkerBox');   
+            });
+
+           if(count(Mail::failures()) > 0) {
+               return response()->json([
+                   'error' => true,
+                   'message' => 'Could not send email. Try again!'
+               ]);
+           } else {
+               return response()->json([
+                   'error' => false,
+                   'message' => 'Email has been sent successfully.'
+               ]);
+           }
+        }
+
+        return response()->json([
+            'error' => true,
+            'data' => $user,
+            'message' => false ? 'User password has been reset' : 'User password could not be reset'
+        ]);
     }
 }

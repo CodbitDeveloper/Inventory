@@ -430,32 +430,39 @@ class WorkOrderController extends Controller
 
         $asset = $workOrder->asset()->first();
 
-        if($request->status != null){
+        if($request->status != null && $asset != null){
             $asset->status = $request->status;
         }
 
-        if($request->availability != null){
+        if($request->availability != null && $asset != null){
             $asset->availability = $request->availability;
         }
 
         $workOrder->update();
 
-        if($asset->update()){
-            $query = DB::select(DB::raw("SELECT COUNT(id) as kount FROM down_time where asset_id = '$asset->id' AND time_up IS NULL"))[0];
-            if(strtolower($asset->availability) == "operational"){
-               if($query->kount > 0){
-                    $query = DB::statement("UPDATE down_time SET time_up = NOW() where asset_id = '$asset->id' and time_up IS NULL");
-               }
-            }else{
-               if($query->kount == 0){
-                    $query = DB::statement("INSERT INTO down_time(time_down, asset_id) VALUES (NOW(), '$asset->id')");
-               }
+        if($asset != null) {
+            if($asset->update()){
+                $query = DB::select(DB::raw("SELECT COUNT(id) as kount FROM down_time where asset_id = '$asset->id' AND time_up IS NULL"))[0];
+                if(strtolower($asset->availability) == "operational"){
+                   if($query->kount > 0){
+                        $query = DB::statement("UPDATE down_time SET time_up = NOW() where asset_id = '$asset->id' and time_up IS NULL");
+                   }
+                }else{
+                   if($query->kount == 0){
+                        $query = DB::statement("INSERT INTO down_time(time_down, asset_id) VALUES (NOW(), '$asset->id')");
+                   }
+                }
+    
+                return response()->json([
+                    "error" => false,
+                    "message" => "Asset updated"
+                ]);
             }
+        } 
 
-            return response()->json([
-                "error" => false,
-                "message" => "Asset updated"
-            ]);
-        }
+        return response()->json([
+            'error' => false,
+            'message' => 'Work order has been updated'
+        ]);
     }
 }

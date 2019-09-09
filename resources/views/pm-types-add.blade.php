@@ -293,6 +293,7 @@
                 presentNotification("Add at least one task to this pm schedule", "danger", "top", "right");
             }else{
                 data.append("hospital_id", "{{$user->hospital_id}}");
+                data.append("reported_by", "{{Auth::user()->id}}");
                 data.append("actions", tasks);
                 
                 if(data.get("assets[]") == null && data.get("asset_category_id") == ""){

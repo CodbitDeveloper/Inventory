@@ -19,6 +19,12 @@
                 </a>
             </li>
             <li>
+                <a href="/admin/districts">
+                    <i class="now-ui-icons location_pin"></i>
+                    <p>Districts</p>
+                </a>
+            </li>
+            <li>
                 <a href="/admin/donations">
                     <i class="now-ui-icons shopping_delivery-fast"></i>
                     <p>Donations</p>
@@ -34,6 +40,12 @@
                 <a href="/admin/categories">
                     <i class="now-ui-icons files_single-copy-04"></i>
                     <p>Categories</p>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/users">
+                    <i class="now-ui-icons users_single-02"></i>
+                    <p>Users and Engineers</p>
                 </a>
             </li>
         </ul>
