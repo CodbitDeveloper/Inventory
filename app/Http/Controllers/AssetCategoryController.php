@@ -18,9 +18,7 @@ class AssetCategoryController extends Controller
      */
     public function index()
     {
-        /**$assetCategory = AssetCategory::with('parent', 'children')->get();
-
-        return view('asset-category')->with('assetCategory', $assetCategory);*/
+        //
     }
 
     /**
@@ -135,12 +133,27 @@ class AssetCategoryController extends Controller
          ]);
     }
 
+    /**
+     * ------------------------------------------
+     * Upload CSV for regional equipment category
+     * ------------------------------------------
+     * 
+     * @return view 
+     */
     public function uploadCSV(){
         $user = Auth::user();
         $action = "equipment category";
         return view("upload-csv", compact("action", "user"));
     }
 
+    /**
+     * -------------------------------------------
+     * Bulk upload for CSV files
+     * -------------------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function bulkSave(Request $request){
         if($request->file('file') != null){
             //handle save data from csv

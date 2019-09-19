@@ -35,7 +35,31 @@ class RequestEngineerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'work_order_id' => 'required|string',
+            'description' => 'required'
+        ]);
+
+        $requestEngineer = new RequestEngineer();
+
+        $requestEngineer->id = md5('Request'.microtime().rand(1, 1000));
+        $requestEngineer->description = $request->description;
+        $requestEngineer->work_order_id = $request->work_order_id;
+        $requestEngineer->assigned_to = $request->assigned_to;
+        $requestEngineer->assigned_date = $request->assigned_date;
+
+        if($requestEngineer->save()) {
+            return response()->json([
+                'error' => false,
+                'data' => $requestEngineer,
+                'message' => 'Request sent successfully'
+            ]);
+        }
+
+        return response()->json([
+            'error' => true,
+            'message' => 'Could not send request. Try again!'
+        ]);
     }
 
     /**

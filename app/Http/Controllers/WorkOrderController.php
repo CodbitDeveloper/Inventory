@@ -38,6 +38,19 @@ class WorkOrderController extends Controller
     }
 
     /**
+     * --------------------------------------------
+     * Work orders for regional biomedical engineer
+     * ---------------------------------------------
+     */
+    public function adminView()
+    {
+        $admin = Auth::guard('admin')->user();
+
+        $work_orders = WorkOrder::where('admin_id', $admin->id)->with("priority", "admin", "asset")->get();
+        return view("admin.work-orders", compact("work_orders", "admin"));
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -186,6 +199,32 @@ class WorkOrderController extends Controller
     }
 
     /**
+     * -----------------------------------------------
+     * Show regional administrator work order details
+     * -----------------------------------------------
+     * 
+     */
+    public function adminShow($workOrder) 
+    {
+        $admin = Auth::guard('admin')->user();
+
+        if($admin->role == 'Biomedical Engineeer') {
+            $work_order = WorkOrder::with("admin", "priority", "asset", "purchase_orders", "fault_category")
+            ->where([["id", $workOrder], ["admin_id", $admin->id]])
+            ->orWhere("assigned_to", $admin->id)->first();
+        } else if ($admin->role = "Admin") {
+            $work_order = WorkOrder::with("admin", "priority", "asset", "purchase_orders", "fault_category")
+            ->where("id", $workOrder)->first();
+        }
+
+        if($work_order == null) {
+            return abort(403);
+        }
+
+        return view('admin.work-order-details', compact('admin', 'work_order'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\WorkOrder  $workOrder
@@ -249,6 +288,14 @@ class WorkOrderController extends Controller
         //
     }
 
+    /**
+     * ----------------------------
+     * Get available engineers
+     * ----------------------------
+     * 
+     * @param $workOrder
+     * @return \Illuminate\Http\Response
+     */
     public function availableTechnicians($workOrder){
         $engineers = User::whereDoesntHave('work_order_teams', function($query) use ($workOrder){
             $query->where("work_order_id", $workOrder);
@@ -263,6 +310,15 @@ class WorkOrderController extends Controller
         ]);
     }
 
+    /**
+     * -------------------------------------------
+     * Assign engineers to teams for a work order
+     * -------------------------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function assignTeam(WorkOrder $workOrder, Request $request){
         $request->validate([
             "user_ids" => "required"
@@ -279,6 +335,15 @@ class WorkOrderController extends Controller
         ]);
     }
 
+    /**
+     * ----------------------------
+     * Assign assets to work order
+     * ----------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function assignAsset(WorkOrder $workOrder, Request $request){
         $request->validate([
             "asset_id" => "required"
@@ -299,11 +364,28 @@ class WorkOrderController extends Controller
         ]);
     }
 
+    /**
+     * ------------------------------
+     * Get activities for work order
+     * ------------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @return \Illuminate\Http\Response
+     */
     public function getActivities(WorkOrder $workOrder){
         $activities = $workOrder->user_messages()->latest()->get();
         return response()->json($activities);
     }
 
+    /**
+     * ---------------------------------
+     * Record activities for work order
+     * ---------------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function recordActivity(WorkOrder $workOrder, Request $request){
         $request->validate([
             "user_id" => "required",
@@ -317,6 +399,15 @@ class WorkOrderController extends Controller
         ]);
     }
 
+    /**
+     * --------------------------
+     * Add comment to work order
+     * --------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function comment(WorkOrder $workOrder, Request $request){
         $request->validate([
             "user_id" => "required",
@@ -335,14 +426,39 @@ class WorkOrderController extends Controller
         ]);
     }
 
+    /**
+     * -------------------------------
+     * Get all comments for work order
+     * -------------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @return \Illuminate\Http\Response
+     */
     public function getComments(WorkOrder $workOrder){
         return response()->json($workOrder->comments()->with("user")->get());
     }
 
+    /**
+     * -----------------------------------------
+     * Get all spare parts attached to work order
+     * -----------------------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @return \Illuminate\Http\Response
+     */
     public function getSpareParts(WorkOrder $workOrder){
         return response()->json($workOrder->parts()->latest()->get());
     }
 
+    /**
+     * --------------------------------
+     * Attach spare part to work order
+     * --------------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function attachSpareParts(WorkOrder $workOrder, Request $request){
         $request->validate([
             "part_id" => "required",
@@ -357,6 +473,15 @@ class WorkOrderController extends Controller
         ]);
     }
 
+    /**
+     * --------------------------
+     * Update work order status
+     * --------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function updateStatus(Workorder $workOrder, Request $request){
         $workOrder->status = $request->status;
         if($workOrder->update()){
@@ -392,6 +517,15 @@ class WorkOrderController extends Controller
         ]);
     }
     
+    /**
+     * ----------------------------
+     * Mark work order as complete  
+     * ----------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function complete(WorkOrder $workOrder, Request $request)
     {
         $request->validate([
@@ -422,6 +556,15 @@ class WorkOrderController extends Controller
         ]);
     }
 
+    /**
+     * --------------------------------
+     * Work order report
+     * --------------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function report(WorkOrder $workOrder, Request $request){
         $workOrder->date_completed = date('Y-m-d', strtotime($request->date_completed));
         $workOrder->cost = $request->cost;

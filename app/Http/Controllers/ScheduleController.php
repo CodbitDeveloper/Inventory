@@ -115,6 +115,14 @@ class ScheduleController extends Controller
         //
     }
 
+    /**
+     * -----------------------------------------
+     * Get all PM-Schedule to populate calendar
+     * ------------------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function fetchAll(Request $request){
         $start = date("Y-m-d", \strtotime($request->start));
         $end = date("Y-m-d", \strtotime($request->end));

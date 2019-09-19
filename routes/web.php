@@ -22,6 +22,7 @@ Route::middleware('guest')->group(function(){
     Route::get('/', 'UserController@login')->name('login');
     Route::get('/user/profile-complete/{id}', 'UserController@completeProfile')->name('profile.complete');
     Route::get('/request/guest/{request_link}', 'RequestsController@guestRequest')->name('request.guest');
+    Route::get('/admin/profile-complete/{id}', 'AdminController@completeProfile')->name('admin-profile.complete');
 });
 
 Auth::routes();
@@ -89,7 +90,7 @@ Route::middleware('admin')->prefix('admin')->group(function(){
     Route::get('/donations/add', 'DonationController@create')->name("admin.donations.add");
     Route::get('/donations/{donation}', 'DonationController@show')->name("admin.donations.show");
     Route::get("/districts", "DistrictController@index")->name("admin.districts");
-    Route::get('/users', 'UserController@viewAll')->name('admin.users');
+    Route::get('/users', 'AdminController@viewAll')->name('admin.users');
     Route::get('/logout', 'Auth\AdminLoginController@logout')->name('admin.logout');
     Route::get('/equipment-types', 'CategoryController@index')->name('equipment-types');
     Route::get('/engineers', 'AdminController@showEngineers')->name('show-engineers');
@@ -99,6 +100,7 @@ Route::middleware('admin')->prefix('admin')->group(function(){
     Route::get('/assigned/maintenance/{equipment}/{job}', 'RequestsController@handleMaintenance')->name('request.maintenance');
     Route::get('/approve', 'MaintenanceController@adminApprovals')->name('admin-approve');
     Route::get('/markAsRead', 'NotificationController@markAllAsRead')->name('mark.read');
+    Route::get('/work-orders', 'WorkOrderController@adminView')->name('work-orders');
 });
 
 

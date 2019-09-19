@@ -200,6 +200,15 @@ class RequestsController extends Controller
         //
     }
 
+    /**
+     * --------------------------------------
+     * Approve work order request
+     * --------------------------------------
+     * 
+     * @param  \App\Requests  $work_request
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function approve(Requests $work_request, Request $request)
     {
         $request->validate([
@@ -270,6 +279,15 @@ class RequestsController extends Controller
         ]);
     }
 
+    /**
+     * --------------------------------------
+     * Decline work order request
+     * --------------------------------------
+     * 
+     * @param  \App\Requests  $work_request
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function decline(Requests $work_request, Request $request)
     {
         $work_request->decline();
@@ -332,6 +350,14 @@ class RequestsController extends Controller
         return date("Y-m-d H:i:s", strtotime(stripslashes($date)));
     }
 
+    /**
+     * --------------------------------------
+     * Check request link from guest
+     * --------------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function guestAdd(Request $request){
         $request->validate([
             "request_link" => "required",

@@ -33,6 +33,13 @@ class HomeController extends Controller
         return view('home', compact('user'));
     }
 
+    /**
+     * --------------------------------------------
+     * Get upcoming preventive maintenance schedule
+     * ---------------------------------------------
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function loadUpcoming(Request $request){
         $request->validate([
             "hospital_id" => "required"

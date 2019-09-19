@@ -111,6 +111,14 @@ class SettingController extends Controller
         //
     }
 
+    /**
+     * ---------------------------------------------------
+     * Generate request URL (link) for work order request
+     * ---------------------------------------------------
+     * 
+     * @param  $hospital_id
+     * @return \Illuminate\Http\Response
+     */
     public function generateRequestLink($hospital_id){
         $hospital = Hospital::where("id", $hospital_id)->first();
 
@@ -145,6 +153,15 @@ class SettingController extends Controller
         ]);
     }
 
+    /**
+     * ----------------------------------
+     * Send request URL (link)
+     * ----------------------------------
+     * 
+     * @param $hospital_id
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function sendLink($hospital_id, Request $request)
     {
         $setting = Setting::with('hospital')->where('hospital_id', $hospital_id)->first();

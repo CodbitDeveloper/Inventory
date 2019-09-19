@@ -195,6 +195,15 @@ class EquipmentController extends Controller
         }
     }
 
+    /**
+     * ----------------------------------------
+     * Update equipment status
+     * ----------------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Equipment  $equipment
+     * @return \Illuminate\Http\Response
+     */
     public function updateStatus(Equipment $equipment, Request $request){
         $equipment->status = $request->status;
         $equipment->reason = $request->reason;

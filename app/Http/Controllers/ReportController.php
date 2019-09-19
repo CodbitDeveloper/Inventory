@@ -16,7 +16,13 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    //
+    /**
+     * ---------------------
+     * Dsiplay report
+     * ---------------------
+     * 
+     * @return view
+     */
     public function index(){ 
         $user = Auth::user();
         if($user->role == 'Admin' || $user->role == 'Regular Technician' || $user->role == 'Hospital Head') {
@@ -26,6 +32,9 @@ class ReportController extends Controller
         }
     }
 
+    /**
+     * 
+     */
     public function workOrderIndex(Request $request){
         $request->validate([
             "hospital_id" => "required"

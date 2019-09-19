@@ -42,7 +42,9 @@ class LoginController extends Controller
     }
 
     /**
+     * ----------------------------------------------------------
      * Get the needed authorization credentials from the request.
+     *------------------------------------------------------------
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -60,11 +62,14 @@ class LoginController extends Controller
         ];
     }
 
-    /*public function username()
-    {
-        return 'username';
-    }*/
-
+    /**
+     * ------------------------------------------
+     * Authenticate hospital
+     * ------------------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\User  $user
+     */
     protected function authenticated(Request $request, $user)
     {
         $hospital = Hospital::with('district')->where('id', $user->hospital_id)->first();
@@ -77,6 +82,13 @@ class LoginController extends Controller
         return redirect('/');
     }
 
+    /**
+     * ------------------------------------------
+     * User login 
+     * ------------------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
     public function login(Request $request)
     {
         $this->validateLogin($request);

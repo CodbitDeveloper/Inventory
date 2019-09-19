@@ -225,6 +225,15 @@ class PurchaseOrderController extends Controller
         //
     }
 
+    /**
+     * --------------------------------
+     * Approve purchase order
+     * --------------------------------
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\PurchaseOrder  $purchaseOrder
+     * @return \Illuminate\Http\Response
+     */
     public function approve(PurchaseOrder $purchaseOrder, Request $request) 
     {
         $request->validate([
@@ -251,6 +260,16 @@ class PurchaseOrderController extends Controller
         ]);
     }
 
+    
+    /**
+     * --------------------------------
+     * Fulfill purchase order
+     * --------------------------------
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\PurchaseOrder  $purchaseOrder
+     * @return \Illuminate\Http\Response
+     */
     public function fulfill(Request $request, PurchaseOrder $purchaseOrder)
     {
         $order_items = $purchaseOrder->order_items()->get();
@@ -288,6 +307,15 @@ class PurchaseOrderController extends Controller
 
     }
 
+    /**
+     * --------------------------------
+     * Decline purchase order
+     * --------------------------------
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\PurchaseOrder  $purchaseOrder
+     * @return \Illuminate\Http\Response
+     */
     public function decline(PurchaseOrder $purchaseOrder)
     {
         $purchaseOrder->decline();
@@ -308,6 +336,16 @@ class PurchaseOrderController extends Controller
         ]);
     }
 
+    
+    /**
+     * --------------------------------------
+     * Send purchase order request URL (link)
+     * --------------------------------------
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\PurchaseOrder  $purchaseOrder
+     * @return \Illuminate\Http\Response
+     */
     public function sendLink(Request $request, PurchaseOrder $purchaseOrder)
     {
         $request->validate([
@@ -342,6 +380,14 @@ class PurchaseOrderController extends Controller
         }
     }
 
+    /**
+     * --------------------
+     * Display approval
+     * --------------------
+     * 
+     * @param $hash_link
+     * @return view
+     */
     public function approval($hash_link){
         $user = Auth::user();
 
@@ -357,7 +403,13 @@ class PurchaseOrderController extends Controller
         return view('purchase-approval', compact("order", "user"));
     }
 
-    
+    /**
+     * ---------------------------------
+     * Generate PDF for purchase order
+     * ---------------------------------
+     * 
+     * @param $hashLink
+     */
     public function generatePdf($hashLink){
         $user = Auth::user();
         $order = PurchaseOrder::with("service_vendor", "order_items", "hospital")->where("hash_link", $hashLink)->first();
