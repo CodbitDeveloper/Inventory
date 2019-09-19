@@ -609,6 +609,14 @@ class WorkOrderController extends Controller
         ]);
     }
 
+    /**
+     * -----------------------------------
+     * Get all work orders for mobile app
+     * -----------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function appGet(Request $request){
         $request->validate([
             "user" => "required"
@@ -626,10 +634,26 @@ class WorkOrderController extends Controller
         return response()->json($workOrders);
     }
 
+    /**
+     * -----------------------------------------
+     * Get work order activities for mobile app
+     * -----------------------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @return \Illuminate\Http\Response
+     */
     public function appActionsGet(WorkOrder $workOrder){
         return response()->json($workOrder->user_messages()->get());
     }
 
+    /**
+     * -------------------------------------------
+     * Get all work order comments for mobile app
+     * -------------------------------------------
+     * 
+     * @param  \App\WorkOrder  $workOrder
+     * @return \Illuminate\Http\Response
+     */
     public function appCommentsGet(WorkOrder $workOrder){
         return response()->json($workOrder->comments()->with("user")->get());
     }

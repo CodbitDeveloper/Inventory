@@ -258,6 +258,14 @@ class PmScheduleController extends Controller
         ]);
     }
 
+    /**
+     * -----------------------------
+     * Get PmSchedules for mobile app
+     * ------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function appGetPmSchedules(Request $request){
         $request->validate([
             "hospital_id" => "required"
@@ -267,6 +275,14 @@ class PmScheduleController extends Controller
         return response()->json($pmSchedules);
     }
 
+    /**
+     * -------------------------------------
+     * Get PmSchedule history for mobile app
+     * -------------------------------------
+     * 
+     * @param  \App\PmSchedule  $pmSchedule
+     * @return \Illuminate\Http\Response
+     */
     public function appGetPmScheduleHistory(PmSchedule $pmSchedule){
         return response()->json($pmSchedule->preventive_maintenances()->get());
     }

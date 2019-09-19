@@ -419,7 +419,14 @@ class AssetController extends Controller
         ]);
     }
 
-    
+    /**
+     * -------------------------------
+     * Search for asset on mobile app
+     * -------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function search(Request $request){
         $request->validate([
             "q" => "required",
