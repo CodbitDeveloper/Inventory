@@ -257,4 +257,17 @@ class PmScheduleController extends Controller
             "message" => "Task deleted"
         ]);
     }
+
+    public function appGetPmSchedules(Request $request){
+        $request->validate([
+            "hospital_id" => "required"
+        ]);
+        
+        $pmSchedules = PmSchedule::where("hospital_id", $request->hospital_id)->with("actions", "department", "unit", "priority", "asset_category")->get();
+        return response()->json($pmSchedules);
+    }
+
+    public function appGetPmScheduleHistory(PmSchedule $pmSchedule){
+        return response()->json($pmSchedule->preventive_maintenances()->get());
+    }
 }

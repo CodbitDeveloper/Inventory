@@ -608,4 +608,29 @@ class WorkOrderController extends Controller
             'message' => 'Work order has been updated'
         ]);
     }
+
+    public function appGet(Request $request){
+        $request->validate([
+            "user" => "required"
+        ]);
+
+        $user = User::where("id", $request->user)->first();
+        if($user->role == "Admin"){
+            $workOrders = WorkOrder::with("priority", "asset", "fault_category", "user", "unit", "department", "service_vendor", "request")->where("hospital_id", $user->hospital_id)->latest()->get();
+        }else{
+            $workOrders = WorkOrder::with("priority", "asset", "fault_category", "user", "unit", "department", "service_vendor", "request")->where("assigned_to", $user->id)->orWhereHas("work_order_teams", function($q)use($user){
+              $q->where("user_id", $user->id);  
+            })->latest()->get();
+        }
+
+        return response()->json($workOrders);
+    }
+
+    public function appActionsGet(WorkOrder $workOrder){
+        return response()->json($workOrder->user_messages()->get());
+    }
+
+    public function appCommentsGet(WorkOrder $workOrder){
+        return response()->json($workOrder->comments()->with("user")->get());
+    }
 }
