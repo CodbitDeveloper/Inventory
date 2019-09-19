@@ -47,7 +47,7 @@
                                                 <div class="icon icon-info">
                                                     <i class="now-ui-icons health_ambulance"></i>
                                                 </div>
-                                                <a href="/admin/hospitals"><h6 class="stats-title">Equipment</h6></a>
+                                                <a href="/admin/equipment"><h6 class="stats-title">Equipment</h6></a>
                                             </div>
                                         </div>
                                     </div>
@@ -57,7 +57,7 @@
                                                 <div class="icon icon-info">
                                                     <i class="now-ui-icons health_ambulance"></i>
                                                 </div>
-                                                <a href="/admin/hospitals"><h6 class="stats-title">Donations</h6></a>
+                                                <a href="/admin/donations"><h6 class="stats-title">Donations</h6></a>
                                             </div>
                                         </div>
                                     </div>
@@ -67,7 +67,7 @@
                                                 <div class="icon icon-info">
                                                     <i class="now-ui-icons health_ambulance"></i>
                                                 </div>
-                                                <a href="/admin/hospitals"><h6 class="stats-title">Reports</h6></a>
+                                                <a href="#"><h6 class="stats-title">Reports</h6></a>
                                             </div>
                                         </div>
                                     </div>

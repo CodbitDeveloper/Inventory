@@ -197,7 +197,7 @@ class EquipmentController extends Controller
 
     public function updateStatus(Equipment $equipment, Request $request){
         $equipment->status = $request->status;
-        $equipment->status = $request->status;
+        $equipment->reason = $request->reason;
 
         if($equipment->update()){
             return response()->json([

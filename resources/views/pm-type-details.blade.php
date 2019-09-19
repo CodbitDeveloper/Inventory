@@ -190,7 +190,7 @@
                                                     <tr>
                                                         <td>{{$maintenance->date_completed != null ? date('jS F, Y', strtotime($maintenance->date_completed)) : 'N/A'}}</td>
                                                         <td>{{$maintenance->created_at != null ? date('jS F, Y', strtotime($maintenance->created_at)) : 'N/A'}}</td>
-                                                        <td>Not known yet</td>
+                                                        <td>{{$maintenance->user != null ? $maintenance->user->firstname.' '.$maintenance->user->lastname : 'N/A'}}</td>
                                                         <td>{{$maintenance->action_taken != null ? $maintenance->action_taken : 'N/A'}}</td>
                                                         <td>{{$maintenance->observation != null ? $maintenance->observation : 'N/A'}}</td>
                                                         <td>{{$maintenance->recommendation != null ? $maintenance->recommendation : 'N/A'}}</td>

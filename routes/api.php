@@ -27,6 +27,7 @@ Route::middleware('auth:api')->group(function(){
     Route::put('users/edit/{user}', 'UserController@editUser');
     Route::put('users/deactivate/{user}', 'UserController@deactivate');
     Route::put('users/activate/{user}', 'UserController@activate');
+    Route::put('users/reset-password/{user}', 'UserController@resetPassword');
     Route::post('users/user-login', 'UserController@userLogin');
 
     Route::post('asset-category/add', 'AssetCategoryController@store');
