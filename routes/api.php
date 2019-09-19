@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 Route::post('user/complete-profile', 'UserController@complete');
 Route::post('request/guest/add', 'RequestsController@guestAdd');
 
+Route::post('app/login', 'Auth\LoginController@mobileLogin');
+
 Route::middleware('auth:api')->group(function(){
     Route::get("home/get-upcoming", "HomeController@loadUpcoming");
     Route::get('users/', 'UserController@index');
@@ -131,6 +133,7 @@ Route::middleware('auth:api')->group(function(){
     Route::get("reports/get-pm-years", "ReportController@getPmYears");
     Route::get("reports/equipment", "ReportController@equipmentReport");
     Route::get("reports/technicians", "ReportController@technicianReport");
+
 });
 
 Route::middleware('passport:admin-api')->group(function(){
@@ -163,3 +166,14 @@ Route::middleware('passport:admin-api')->group(function(){
 Route::group(['middleware' => ['passport:admin-api']], function() {
     Route::post('/token1', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
 });
+
+
+Route::get("app/work-orders", "WorkOrderController@appGet");
+Route::get("app/work-orders/actions/{workOrder}", "WorkOrderController@appActionsGet");
+Route::get("app/work-orders/comments/{workOrder}", "WorkOrderController@appCommentsGet");
+Route::post("app/work-order/{workOrder}/record-activity", "WorkOrderController@recordActivity");
+Route::post("app/work-order/{workOrder}/comment", "WorkOrderController@comment");
+Route::get("app/pm-schedules", "PmScheduleController@appGetPmSchedules");
+Route::get("app/{pmSchedule}/preventive-maintenances", "PmScheduleController@appGetPmScheduleHistory");
+Route::post("app/pm/add", "PreventiveMaintenanceController@store");
+Route::get("app/equipment/search", "AssetController@search");

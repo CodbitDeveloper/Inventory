@@ -334,4 +334,19 @@ class AssetController extends Controller
             "message" => "Child unlinked successfully"
         ]);
     }
+
+    
+    public function search(Request $request){
+        $request->validate([
+            "q" => "required",
+            "hospital_id" => "required"
+        ]);
+
+        $equipment = Asset::with("asset_category", "parent", "user", "department", "unit", "service_vendor")->where("hospital_id", $request->hospital_id)->where(function($q) use ($request){
+            $q->where("asset_code", 'LIKE', '%'.$request->q.'%')->orWhere("serial_number", 'LIKE', '%'.$request->q.'%');
+        })->get();
+
+        
+        return response()->json($equipment);
+    }
 }
