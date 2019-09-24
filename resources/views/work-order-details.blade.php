@@ -58,6 +58,9 @@
                             @if($user->id == $work_order->user_admin && $work_order->status == 1)
                             <button class="dropdown-item" data-toggle="modal" data-target="#complete_modal">Mark as <b>completed</b></button>
                             @endif
+                            @if($user->role == 'Admin' && ($work_order->status == 4 || $work_order->status == 3 || $work_order->status == 2))
+                            <button class="dropdown-item" data-toggle="modal" data-target="#request_engineer">Request engineer</button>
+                            @endif
                         @else
                             <button class="dropdown-item" disabled>No actions available</button>
                         @endif
@@ -542,6 +545,33 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="request_engineer">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;<span class="sr-only">Close</span></button>
+                <h6 class="header">Request Biomedical Engineer</h6>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to request for biomedical engineer?</p>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-row">
+                            <div style="width:100%;">
+                                <label><b>Description</b></label>
+                                <textarea class="form-control resetable" id="request_description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer mt-4 right">
+                <button type="button" data-dismiss="modal" class="btn btn-light">Cancel</button>
+                <button type="button" class="btn btn-purple" onclick="request(this)">Request biomedical engineer</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="add_part" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -835,6 +865,14 @@
         }
 
         submit_form("/api/work-order/{{$work_order->id}}/complete", "post", data, undefined, btn, true);
+    }
+
+    const request = (element) => {
+        let btn = $(element);
+
+        let data = `work_order_id={{$work_order->id}}&description=${$("#request_description").val()}`;
+
+        submit_form("/api/request-engineer/add", "post", data, undefined, btn, true);
     }
 
     $("#report_form").on("submit", function(e){

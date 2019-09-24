@@ -1,3 +1,6 @@
+@php
+$auth_admin = Auth::guard('admin')->user();
+@endphp
 <div class="sidebar" data-color="blue">
     <div class="sidebar-wrapper">
         <div class="logo">
@@ -12,6 +15,7 @@
                     <p>Dashboard</p>
                 </a>
             </li>
+            @if($auth_admin->role == 'Admin')
             <li>
                 <a href="/admin/hospitals">
                     <i class="now-ui-icons health_ambulance"></i>
@@ -48,6 +52,15 @@
                     <p>Users and Engineers</p>
                 </a>
             </li>
+            @endif
+            @if($auth_admin->role == 'Biomedical Engineer')
+                <li>
+                    <a href="#">
+                        <i class="now-ui-icons ui-2_settings-90"></i>
+                        <p class="sidebar-normal">Work Orders</p>
+                    </a>
+                </li>
+            @endif
         </ul>
     </div>
 </div>

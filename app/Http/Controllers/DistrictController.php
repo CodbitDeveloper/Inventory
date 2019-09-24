@@ -124,6 +124,13 @@ class DistrictController extends Controller
         //
     }
 
+    /**
+     * -------------------------------
+     * Display hospitals for districts
+     * -------------------------------
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function viewHospitals(District $district){
         return response()->json($district->hospitals()->get());
     }

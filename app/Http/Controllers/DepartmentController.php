@@ -22,6 +22,13 @@ class DepartmentController extends Controller
         return response()->json($departments, 200);
     }
 
+    /**
+     * -------------------------------
+     * Get department with it's units
+     * -------------------------------
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function getDepartmentUnits()
     {
         $department = Department::with('units')->get();
@@ -29,6 +36,13 @@ class DepartmentController extends Controller
         return response()->json($department, 200);
     }
 
+    /**
+     * ------------------------------------------
+     * Get all departments with units and assets
+     * ------------------------------------------
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function getAll()
     {
         $department = Department::with(['units', 'assets'])->get();
@@ -155,6 +169,13 @@ class DepartmentController extends Controller
         //
     }
 
+    /**
+     * ---------------------
+     * Display all department
+     * ---------------------
+     * 
+     * @return view
+     */
     public function viewAll(){
         $user = Auth::user();
         if($user->role == 'Admin' || $user->role == 'Regular Technician') { 
@@ -168,6 +189,14 @@ class DepartmentController extends Controller
         }
     }
     
+    /**
+     * ------------------------
+     * Display department details
+     * ------------------------
+     * 
+     * @param $department
+     * @return view
+     */
     public function view($department){
         $user = Auth::user();
         

@@ -138,6 +138,15 @@ class PreventiveMaintenanceController extends Controller
         //
     }
 
+     /**
+     * --------------------------------
+     * Approve preventive maintenance 
+     * --------------------------------
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\PreventiveMaintenance  $preventiveMaintenance
+     * @return \Illuminate\Http\Response
+     */
     public function approve(PreventiveMaintenance $preventiveMaintenance, Request $request){
         $request->validate([
             'marked_by' => 'required'
@@ -245,6 +254,15 @@ class PreventiveMaintenanceController extends Controller
         }
     }
 
+    /**
+     * --------------------------------
+     * Decline preventive maintenance 
+     * --------------------------------
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\PreventiveMaintenance  $preventiveMaintenance
+     * @return \Illuminate\Http\Response
+     */
     public function decline(PreventiveMaintenance $preventiveMaintenance, Request $request){
 
         $preventiveMaintenance->is_completed = 0;

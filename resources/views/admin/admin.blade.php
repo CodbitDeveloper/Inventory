@@ -1,3 +1,6 @@
+@php
+$auth_admin = Auth::guard('admin')->user();
+@endphp
 <!DOCTYPE html>
 <html>
 
@@ -31,6 +34,7 @@
                         <div class="card card-stats">
                             <div class="card-body">
                                 <div class="row">
+                                    @if($auth_admin->role == 'Admin')
                                     <div class="col-md-4">
                                         <div class="statistics">
                                             <div class="info">
@@ -45,7 +49,7 @@
                                         <div class="statistics">
                                             <div class="info">
                                                 <div class="icon icon-info">
-                                                    <i class="now-ui-icons health_ambulance"></i>
+                                                    <i class="now-ui-icons ui-2_settings-90"></i>
                                                 </div>
                                                 <a href="/admin/equipment"><h6 class="stats-title">Equipment</h6></a>
                                             </div>
@@ -55,7 +59,7 @@
                                         <div class="statistics">
                                             <div class="info">
                                                 <div class="icon icon-info">
-                                                    <i class="now-ui-icons health_ambulance"></i>
+                                                    <i class="now-ui-icons shopping_delivery-fast"></i>
                                                 </div>
                                                 <a href="/admin/donations"><h6 class="stats-title">Donations</h6></a>
                                             </div>
@@ -65,7 +69,7 @@
                                         <div class="statistics">
                                             <div class="info">
                                                 <div class="icon icon-info">
-                                                    <i class="now-ui-icons health_ambulance"></i>
+                                                    <i class="now-ui-icons business_chart-pie-36"></i>
                                                 </div>
                                                 <a href="#"><h6 class="stats-title">Reports</h6></a>
                                             </div>
@@ -81,26 +85,25 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @if(Auth::guard('admin')->user()->role == 'Admin')
-                                        <div class="col-md-4">
-                                            <div class="statistics">
-                                                <div class="info">
-                                                    <div class="icon icon-info">
-                                                        <i class="now-ui-icons users_single-02"></i>
-                                                    </div>
-                                                    <a href="/admin/users"><h6 class="stats-title">Users and Engineers</h6></a>
+                                    <div class="col-md-4">
+                                        <div class="statistics">
+                                            <div class="info">
+                                                <div class="icon icon-info">
+                                                    <i class="now-ui-icons users_single-02"></i>
                                                 </div>
+                                                <a href="/admin/users"><h6 class="stats-title">Users and Engineers</h6></a>
                                             </div>
                                         </div>
+                                    </div>
                                     @endif
                                     @if(Auth::guard('admin')->user()->role == 'Biomedical Engineer')
                                         <div class="col-md-4">
                                             <div class="statistics">
                                                 <div class="info">
                                                     <div class="icon icon-info">
-                                                        <i class="now-ui-icons users_single-02"></i>
+                                                        <i class="now-ui-icons ui-2_settings-90"></i>
                                                     </div>
-                                                    <a href="/admin/assigned"><h6 class="stats-title">Assigned Jobs</h6></a>
+                                                    <a href="#"><h6 class="stats-title">Work Orders</h6></a>
                                                 </div>
                                             </div>
                                         </div>

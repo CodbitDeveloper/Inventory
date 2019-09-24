@@ -135,7 +135,10 @@ Route::middleware('auth:api')->group(function(){
     Route::get("reports/equipment", "ReportController@equipmentReport");
     Route::get("reports/technicians", "ReportController@technicianReport");
 
+    Route::post('request-engineer/add', 'RequestEngineerController@store');
 });
+
+Route::post('admin/complete-profile', 'AdminController@complete');
 
 Route::middleware('passport:admin-api')->group(function(){
     Route::get('admins/', 'AdminController@index');
@@ -143,7 +146,9 @@ Route::middleware('passport:admin-api')->group(function(){
     Route::get('admins/{admin}', 'AdminController@show');
     Route::put('admins/update/{admin}', 'AdminController@update');
     Route::post('admins/admin-login', 'Auth\AdminLoginController@adminLogin');
-    Route::put('admins/activate', 'AdminController@is_active');
+    Route::put('admins/activate/{admin}', 'AdminController@activate');
+    Route::put('admins/deactivate/{admin}', 'AdminController@deactivate');
+    Route::put('admins/reset-password/{admin}', 'AdminController@resetPassword');
 
     Route::get('hospitals/', 'HospitalController@index');
     Route::get('hospitals/{hospital}/get-equipment', 'HospitalController@getEquipment');

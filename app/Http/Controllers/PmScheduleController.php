@@ -205,6 +205,13 @@ class PmScheduleController extends Controller
         ]);
     }
 
+    /**
+     * -------------------------------
+     * Display PM-Schedule with assets
+     * -------------------------------
+     * 
+     * @param $id
+     */
     public function getPmSchedule($id)
     {
         $pmSchedule = PmSchedule::with('assets')->where([['id', $id], ['hospital_id', Auth::user()->hospital_id]])->first();
@@ -212,6 +219,15 @@ class PmScheduleController extends Controller
         return view();
     }
 
+    /**
+     * -----------------------
+     * Add task to PM-Schedule
+     * ------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\PmSchedule  $pmSchedule
+     * @return \Illuminate\Http\Response
+     */
     public function addTask(PmSchedule $pmSchedule, Request $request){
         $pmAction = new PmAction();
         $pmAction->pm_schedule_id = $pmSchedule->id;
@@ -226,6 +242,14 @@ class PmScheduleController extends Controller
         ]);
     }
 
+    /**
+     * ---------------------
+     * Delete task 
+     * ---------------------
+     * 
+     * @param  \App\PmAction  $pmAction
+     * @return \Illuminate\Http\Response
+     */
     public function deleteTask(PmAction $pmAction){
         $pmAction->delete();
         return response()->json([
@@ -234,6 +258,14 @@ class PmScheduleController extends Controller
         ]);
     }
 
+    /**
+     * -----------------------------
+     * Get PmSchedules for mobile app
+     * ------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function appGetPmSchedules(Request $request){
         $request->validate([
             "hospital_id" => "required"
@@ -243,6 +275,14 @@ class PmScheduleController extends Controller
         return response()->json($pmSchedules);
     }
 
+    /**
+     * -------------------------------------
+     * Get PmSchedule history for mobile app
+     * -------------------------------------
+     * 
+     * @param  \App\PmSchedule  $pmSchedule
+     * @return \Illuminate\Http\Response
+     */
     public function appGetPmScheduleHistory(PmSchedule $pmSchedule){
         return response()->json($pmSchedule->preventive_maintenances()->get());
     }

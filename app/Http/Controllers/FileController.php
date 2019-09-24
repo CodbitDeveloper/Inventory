@@ -127,10 +127,25 @@ class FileController extends Controller
         }
     }
 
+    /**
+     * ---------------------------------
+     * Download category CSV
+     * ---------------------------------
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function downloadCategoryCSV(){
         return response()->download(storage_path('docs/tynkerbox_category_template.csv'));
     }
 
+    /**
+     * ------------------------
+     * Download files
+     * ------------------------
+     * 
+     * @param $file
+     * @return \Illuminate\Http\Response
+     */
     public function download(File $file){
         if(Auth::user()->hospital_id == $file->asset()->first()->hospital_id){
             return response()->download(\public_path('/files/'.$file->name));

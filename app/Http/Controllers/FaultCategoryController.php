@@ -134,12 +134,27 @@ class FaultCategoryController extends Controller
         }
     }
 
+    /**
+     * ------------------------------------------
+     * Upload CSV for regional equipment category
+     * ------------------------------------------
+     * 
+     * @return view 
+     */
     public function uploadCSV(){
         $user = Auth::user();
         $action = "fault category";
         return view("upload-csv", compact("action", "user"));
     }
 
+    /**
+     * -------------------------------------------
+     * Bulk upload for CSV files
+     * -------------------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function bulkSave(Request $request){
         if($request->file('file') != null){
             //handle save data from csv

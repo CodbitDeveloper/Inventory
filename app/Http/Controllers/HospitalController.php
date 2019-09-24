@@ -152,14 +152,37 @@ class HospitalController extends Controller
         //
     }
 
+    /**
+     * ------------------------------------
+     * Display single hospital for regional admin
+     * -------------------------------------
+     * 
+     *@return view
+     */
     public function viewHospital(Hospital $hospital){
         return view('admin.single_hospital')->with('hospital', $hospital);
     }
 
+    /**
+     * ----------------------------------------------------
+     * Get equipment for hospitals with equipment category
+     * ----------------------------------------------------
+     * 
+     * @param \App\Hospital  $hospital
+     * @return \Illuminate\Http\Response
+     */
     public function getEquipment(Hospital $hospital){
         return response()->json($hospital->assets()->with("asset_category")->get());
     }
 
+    /**
+     * ---------------------------------------------
+     * Get department of the hospital with the units
+     * ----------------------------------------------
+     * 
+     * @param \App\Hospital  $hospital
+     * @return \Illuminate\Http\Response
+     */
     public function getDepartments(Hospital $hospital){
         return response()->json($hospital->departments()->with("units")->get());
     }

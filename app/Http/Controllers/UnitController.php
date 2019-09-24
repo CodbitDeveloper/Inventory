@@ -22,6 +22,13 @@ class UnitController extends Controller
         return response()->json($units, 200);
     }
 
+    /**
+     * ------------------------
+     * Get Unit with equipment
+     * ------------------------
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function getUnitEquipment()
     {
         $unit = Unit::with('equipments')->get();
@@ -133,17 +140,5 @@ class UnitController extends Controller
     public function destroy(Unit $unit)
     {
         //
-    }
-
-    public function viewAll(){
-        $user = Auth::user();
-
-        $department = Department::with('units', 'units.user')->where('hospital_id', $user->hospital_id)->get();
-        $users = User::where('hospital_id', $user->hospital_id)->get();
-        if(strtolower($user->role) == 'admin' || strtolower($user->role) == 'storekeeper'){
-            return view('units')->with('departments', $department)->with('users', $users);
-        }else{
-            return abort(403);
-        }
     }
 }

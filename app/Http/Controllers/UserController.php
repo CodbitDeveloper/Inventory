@@ -26,9 +26,6 @@ class UserController extends Controller
         $hospital = Hospital::where('id', '=', $user->hospital_id)->first();
 
         return view('user-profile')->with('hospital', $hospital)->with('user', $user);
-        //$users = User::all();
-
-        //return response()->json($users, 200);
     }
 
 
@@ -173,6 +170,13 @@ class UserController extends Controller
         //
     }
 
+    /**
+     * ------------------
+     * Display all users
+     * ------------------
+     * 
+     * @return view
+     */
     public function listAll()
     {
         $user = Auth::user();
@@ -186,6 +190,13 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * ---------------
+     * Add new user
+     * ---------------
+     * 
+     * @return view
+     */
     public function addNew()
     {
         $user = Auth::user();
@@ -196,6 +207,14 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * ------------------------
+     * Deactivate user account
+     * ------------------------
+     * 
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+     */
     public function deactivate (User $user)
     {
          $user->active = 0;
@@ -217,6 +236,14 @@ class UserController extends Controller
          }
     }
 
+    /**
+     * ------------------------
+     * Activate user account
+     * ------------------------
+     * 
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+     */
     public function activate (User $user)
     {
          $user->active = 1;
@@ -238,14 +265,14 @@ class UserController extends Controller
          }
     }
 
-    public function viewAll()
-    {
-        $user = Auth::user();
-
-        $users = User::with('hospital')->get();
-        return view('admin.users')->with('users', $users)->with('user', $user);
-    }
-
+    /**
+     *------------------------------- ---------
+     * Complete profile registration for user
+     * ----------------------------------------
+     * 
+     * @param  $id
+     * @return view
+     */
     public function completeProfile($id)
     {
         $user = User::with('hospital')->where('id', $id)->where('completed', 0)->first();
@@ -257,6 +284,15 @@ class UserController extends Controller
         return view('complete-profile')->with('user', $user);
     }
 
+    /**
+     * ---------------------------------------------
+     * Store user profile details
+     * ---------------------------------------------
+     * 
+     * @param  \App\User  $user
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function complete(Request $request, User $user)
     {
         $request->validate([
@@ -298,10 +334,26 @@ class UserController extends Controller
 
     }
 
+    /**
+     * ----------------
+     * Login view
+     * ----------------
+     * 
+     * @return view
+     */
     public function login(){
         return view('auth/login');
     }
 
+    /**
+     * -----------------------------------
+     * Edit user account details
+     * -----------------------------------
+     * 
+     * @param  \App\User  $user
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function editUser(User $user, Request $request){
         $request->validate([
             'role' => 'required',
@@ -329,6 +381,14 @@ class UserController extends Controller
         );
     }
 
+    /**
+     * -------------------------
+     * Reset Password for user
+     * -------------------------
+     * 
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+     */
     public function resetPassword(User $user)
     {
         $user->password = '123456789';

@@ -10,6 +10,7 @@ use App\Requests;
 use Auth;
 use Mail;
 use Notification;
+use App\Notifications\AdminFormUpdate;
 use App\Region;
 
 use Illuminate\Http\Request;
@@ -37,14 +38,29 @@ class AdminController extends Controller
         return view('admin.admin');
     }
 
+    /**
+     * --------------------------------
+     * View all regional administrators
+     * --------------------------------
+     */
+    public function viewAll()
+    {
+        $admin = Auth::guard('admin')->user();
+
+        $admins = Admin::with('region')->get();
+        return view('admin.users')->with('admins', $admins)->with('admin', $admin);
+    }
+
+    /**
+     * ----------------------------
+     * Get regional admin profile
+     * ----------------------------
+     */
     public function profile()
     {
         $region = Region::where('id', '=', Auth::guard('admin')->user()->region_id)->first();
 
         return view('admin.admin-profile')->with('region', $region); 
-        //$users = User::all();
-
-        //return response()->json($users, 200);
     }
 
     /**
@@ -65,15 +81,10 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
-        $result = true;
         $request->validate([
-            'firstname'    => 'required|string',
-            'lastname'     => 'required|string',
             'email'        => 'required|string',
-            'password'     => 'required|string|min:6|confirmed',
-            'region_id'    => 'required|string',
-            'phone_number' => 'required|string',
-            'role'         => 'required'
+            'role'         => 'required|string',
+            'region_id'    => 'required|string'
         ]);
         
         $admin = new Admin();
@@ -88,36 +99,44 @@ class AdminController extends Controller
         $admin->role = $request->role;
 
         if($admin->save()){
-           $region = $admin->region()->first();
+            if( $admin->role != "superuser"){
+                $region = $admin->region()->first();
 
-           $result = false;
-           $data = array("admin" => $admin, "region" => $region);
-           $to_name = ucwords($request->firstname.' '.$request->lastname);
-           $to_email = $admin->email;
-
-           Mail::send('email_templates.new_admin', $data, function($message) use($to_name, $to_email) {
-               $message->to($to_email, $to_name)
-                       ->subject('Welcome To The Team');
-               $message->from('noreply@tynkerbox.com', 'TynkerBox');
-           });
-
-           if(count(Mail::failures()) > 0) {
-               return response()->json([
-                   'error' => true,
-                   'message' => 'Could not send the mail. Try again!'
-               ]);
-           } else {
-               return response()->json([
-                   'error' => false,
-                   'message' => 'Admin profile link was sent successfully'
-               ]);
-           }
+                $result = false;
+                $data = array("admin" => $admin, "region" => $region);
+                $to_name = ucwords($request->firstname.' '.$request->lastname);
+                $to_email = $admin->email;
+     
+                Mail::send('email_templates.new_admin', $data, function($message) use($to_name, $to_email) {
+                    $message->to($to_email, $to_name)
+                            ->subject('Welcome To The Team');
+                    $message->from('noreply@tynkerbox.com', 'TynkerBox');
+                });
+     
+                if(count(Mail::failures()) > 0) {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'Could not send the mail. Try again!'
+                    ]);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'message' => 'Admin profile completion link was sent successfully'
+                    ]);
+                }
+            }else{
+                return response()->json([
+                    'error' => false,
+                    'data' => $admin,
+                    'message' => 'Admin created successfully'
+                ], 201);
+            }
+           
         }
 
         return response()->json([
-            'error' => $result,
-            'data' => $admin,
-            'message' => !$result ? 'Admin created successfully' : 'Error creating admin'
+            'error' => true,
+            'message' => 'Could not create admin'
         ], 201);
     }
 
@@ -196,6 +215,11 @@ class AdminController extends Controller
         //
     }
 
+    /**
+     * -----------------------------------------
+     * Get all biomedical engineers in a region
+     * ------------------------------------------
+     */
     public function showEngineers(){
         $admin = Auth::guard('admin')->user();
 
@@ -208,6 +232,13 @@ class AdminController extends Controller
         
     }
 
+    /**
+     * ------------------------------
+     * Add a new biomedical enigneer
+     * ------------------------------
+     * 
+     *@return view
+     */
     public function addEngineer(){
         $admin = Auth::guard('admin')->user();
 
@@ -217,8 +248,16 @@ class AdminController extends Controller
             return abort(403);
         }
     }
-
-    public function activate(Admin $admin)
+ 
+    /**
+     * ---------------------------------
+     * Activate regional user account
+     * ---------------------------------
+     * 
+     * @param  \App\Admin  $admin
+     * @return \Illuminate\Http\Response
+     */
+    public function activate(Admin $admin) 
     {
         $admin->active = 1;
 
@@ -236,6 +275,14 @@ class AdminController extends Controller
         }
     }
 
+    /**
+     * ---------------------------------
+     * Deactivate regional user account
+     * ---------------------------------
+     * 
+     * @param  \App\Admin  $admin
+     * @return \Illuminate\Http\Response
+     */
     public function deactivate(Admin $admin)
     {
         $admin->active = 0;
@@ -254,6 +301,14 @@ class AdminController extends Controller
         }
     }
 
+    /**
+     *------------------------------- -----------------
+     * Complete profile registration for regional user
+     * ------------------------------------------------
+     * 
+     * @param  $id
+     * @return view
+     */
     public function completeProfile($id) 
     {
         $admin = Admin::with('region')->where([['id', $id], ['completed', 0]])->first();
@@ -265,6 +320,15 @@ class AdminController extends Controller
         return view('admin.complete-profile', compact('admin'));
     }
 
+    /**
+     * ---------------------------------------------
+     * Store regional user profile details
+     * ---------------------------------------------
+     * 
+     * @param  \App\Admin  $admin
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function complete(Admin $admin, Request $request) 
     {
         $request->validate([
@@ -304,6 +368,15 @@ class AdminController extends Controller
         ]);
     }
 
+    /**
+     * -----------------------------------
+     * Edit regional user account details
+     * -----------------------------------
+     * 
+     * @param  \App\Admin  $admin
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function editAdmin(Admin $admin, Request $request)
     {
         $request->validate([
@@ -324,6 +397,50 @@ class AdminController extends Controller
         return response()->json([
             'error' => $status,
             'message' => !$status ? 'Admin account updated' : 'Could not update admin account. Try again!'
+        ]);
+    }
+
+    /**
+     * -----------------------------------------------
+     * Reset Password for regional biomedical engineer
+     * -----------------------------------------------
+     * 
+     * @param  \App\Admin  $admin
+     * @return \Illuminate\Http\Response
+     */
+    public function resetPassword(Admin $admin)
+    {
+        $admin->password = '123456789';
+
+        if($admin->save()) {
+            $data = array("user" => $admin);
+
+            $to_name = ucwords($admin->firstname.' '.$admin->lastname);
+            $to_email = $admin->email;
+
+            Mail::send('email_templates.reset_password', $data, function($message) use($to_name, $to_email) {
+                $message->to($to_email, $to_name)
+                        ->subject('Password Reset');
+                $message->from('noreply@tynkerbox', 'TynkerBox');   
+            });
+
+           if(count(Mail::failures()) > 0) {
+               return response()->json([
+                   'error' => true,
+                   'message' => 'Could not send email. Try again!'
+               ]);
+           } else {
+               return response()->json([
+                   'error' => false,
+                   'message' => 'Email has been sent successfully.'
+               ]);
+           }
+        }
+
+        return response()->json([
+            'error' => true,
+            'data' => $admin,
+            'message' => false ? 'Password has been reset' : 'Password could not be reset'
         ]);
     }
 }

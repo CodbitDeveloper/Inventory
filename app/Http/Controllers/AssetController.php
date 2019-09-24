@@ -230,18 +230,51 @@ class AssetController extends Controller
         ]);
     }
 
+    /**
+     * -------------------------------------------
+     * Get all spare parts associated with assets
+     * --------------------------------------------
+     * 
+     * @param  \App\Asset  $asset
+     * @return \Illuminate\Http\Response
+     */
     public function getParts(Asset $asset){
         return response()->json($asset->parts()->get());
     }
 
+    /**
+     * -------------------------------------
+     * Get all files associated with assets
+     * -------------------------------------
+     * 
+     * @param  \App\Asset  $asset
+     * @return \Illuminate\Http\Response
+     */
     public function getFiles(Asset $asset){
         return response()->json($asset->files()->get());
     }
 
+    /**
+     * --------------------------------------------------
+     * Get children assets associated with parent assets
+     * --------------------------------------------------
+     * 
+     * @param  \App\Asset  $asset
+     * @return \Illuminate\Http\Response
+     */
     public function getChildren(Asset $asset){
         return response()->json($asset->children()->get());
     }
 
+    /**
+     * -------------------------------------
+     * Assign child asset to a parent asset
+     * -------------------------------------
+     * 
+     * @param  \App\Asset  $asset
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function assignChild(Request $request, Asset $asset){
         $request->validate([
             "children" => "required"
@@ -255,6 +288,15 @@ class AssetController extends Controller
         ]);
     }
 
+    /**
+     * ------------------------------------------
+     * Assign spare part associated with an asset
+     * ------------------------------------------
+     * 
+     * @param  \App\Asset  $asset
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function assignPart(Request $request, Asset $asset){
         $request->validate([
             "parts" => "required"
@@ -268,6 +310,14 @@ class AssetController extends Controller
         ]);
     }
 
+    /**
+     * ------------------------
+     * Depreciation for asset
+     * ------------------------
+     * 
+     * @param  \App\Asset  $asset
+     * @return \Illuminate\Http\Response
+     */
     public function depreciation(Asset $asset){
         $downtime = DB::select(DB::raw("SELECT SUM(TIMESTAMPDIFF(hour, time_up, time_down)) as downtime from down_time where asset_id = '$asset->id'"))[0];
         $running_time = Carbon\Carbon::parse($asset->created_at)->diffInHours(Carbon\Carbon::now());
@@ -277,6 +327,15 @@ class AssetController extends Controller
         ]);
     }
 
+    /**
+     * --------------------------------
+     * Update downtime and uptime
+     * --------------------------------
+     * 
+     * @param  \App\Asset  $asset
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function toggle(Request $request, Asset $asset){
         $request->validate([
             "availability" => "required",
@@ -314,11 +373,27 @@ class AssetController extends Controller
         return date("Y-m-d H:i:s", strtotime(stripslashes($date)));
     }
 
+    /**
+     * ----------------------------
+     * Get assets for a hospital
+     * ----------------------------
+     * 
+     * @param $hospital
+     */
     public function get($hospital){
         $assets = Asset::where("hospital_id", $hospital)->get();
         return response()->json($assets);
     }
     
+    /**
+     * -------------------------------------------
+     * Remove spare part associated with an asset
+     * -------------------------------------------
+     * 
+     * @param  \App\Asset  $asset
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function removePart(Asset $asset, Request $request){
         $asset->parts()->detach($request->part_id);
         return response()->json([
@@ -327,6 +402,15 @@ class AssetController extends Controller
         ]);
     }
 
+    /**
+     * ------------------------------------------------
+     * Remove child asset associated with parent asset
+     * ------------------------------------------------
+     * 
+     * @param  \App\Asset  $asset
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function removeChild(Asset $asset, Request $request){
         Asset::where("id", $request->child_id)->update(["parent_id" => null]);
         return response()->json([
@@ -335,7 +419,14 @@ class AssetController extends Controller
         ]);
     }
 
-    
+    /**
+     * -------------------------------
+     * Search for asset on mobile app
+     * -------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function search(Request $request){
         $request->validate([
             "q" => "required",

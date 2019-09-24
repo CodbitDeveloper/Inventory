@@ -127,7 +127,7 @@
                                         </tr>
                                         <tr>
                                             <td align="center" style="border-radius: 3px;" bgcolor="#256F9C">
-                                                <a href="{{URL::route('profile.complete', $admin->id)}}" target="_blank" style="font-size: 15px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; border-radius: 3px; padding: 10px 20px; border: 1px solid #256F9C; display: inline-block;" class="mobile-button">Complete profile &rarr;</a></td>
+                                                <a href="{{URL::route('admin-profile.complete', $admin->id)}}" target="_blank" style="font-size: 15px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; border-radius: 3px; padding: 10px 20px; border: 1px solid #256F9C; display: inline-block;" class="mobile-button">Complete profile &rarr;</a></td>
                                         </tr>
                                     </table>
                                 </td>

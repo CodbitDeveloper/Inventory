@@ -15,11 +15,24 @@ class AdminLoginController extends Controller
         $this->middleware('guest:admin', ['except' => ['logout']]);
     }
 
+
+    /**
+     * ----------------------------------
+     * Regional administrator login page
+     * ----------------------------------
+     */
     public function showLoginForm()
     {
         return view('auth.admin-login');
     }
 
+    /**
+     * -----------------------------------------
+     * Login for regional administrator
+     * ------------------------------------------
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
     public function login(Request $request)
     {
         //Validate the form data
@@ -50,37 +63,14 @@ class AdminLoginController extends Controller
             ]);
     }
 
+    /**
+     * -----------------------------------
+     * Logout for regional administrator
+     * -----------------------------------
+     */
     public function logout()
     {
         Auth::guard('admin')->logout();
         return redirect('/admin');
     }
-
-    /*public function adminLogin(Request $request)
-    {
-        //Validate the form
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|min:6'
-        ]);
-
-        $username = $request->username;
-        $password = $request->password;
-        $active = 1;
-
-        $admin = Admin::where([['username', '=', $request->username], ['password', '=', $request->password], ['active', '=', 1]])->first();
-
-        if($admin != null){
-            return response()->json([
-                "error" => false,
-                "admin" => $admin
-            ]);
-        }else{
-            return response()->json([
-                "error" => true,
-                "admin" => "No admin with specified username and password"
-            ]);
-        }
-    }*/
-
 }
