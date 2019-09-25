@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\RequestEngineer;
+use App\Admin;
+use App\WorkOrder;
+
 use Illuminate\Http\Request;
+
+use Auth;
 
 class RequestEngineerController extends Controller
 {
@@ -15,6 +20,17 @@ class RequestEngineerController extends Controller
     public function index()
     {
         //
+        $user = Auth::guard("admin")->user();
+        $requests = RequestEngineer::whereHas("work_order", function($q) use ($user){
+            $q->whereHas("hospital", function($query) use ($user){
+                $query->whereHas("district", function($query) use ($user){
+                    $query->where("region_id", $user->region_id);
+                });
+            });
+        })->with("work_order", "work_order.hospital", "work_order.priority", "engineer")->get();
+
+        $engineers = Admin::where("region_id", $user->region_id)->get();
+        return view("admin.requests", \compact("requests", "engineers"));
     }
 
     /**
@@ -58,7 +74,7 @@ class RequestEngineerController extends Controller
 
         return response()->json([
             'error' => true,
-            'message' => 'Could not send request. Try again!'
+            'message' => 'Could not send request. Try again'
         ]);
     }
 
@@ -105,5 +121,41 @@ class RequestEngineerController extends Controller
     public function destroy(RequestEngineer $requestEngineer)
     {
         //
+    }
+
+    public function assign(Request $request){
+        $request->validate([
+            "admin_id" => "required",
+            "request_id" => "required"
+        ]);
+
+        $requestEngineer = RequestEngineer::where("id", $request->request_id)->first();
+
+        $requestEngineer->update(["status" => 1, "assigned_to" => $request->admin_id]);
+        $requestEngineer->work_order()->update(["admin_id" => $request->admin_id]);
+
+        return response()->json([
+            "error" => false,
+            "message" => "Request approved"
+        ]);
+    }
+
+    public function decline(RequestEngineer $requestEngineer){
+        $requestEngineer->update(["status" => 0, "assigned_to" => null]);
+        $requestEngineer->work_order()->update(["admin_id" => null]);
+
+        return response()->json([
+            "error" => false,
+            "message" => "Request declined"
+        ]);
+    }
+
+    public function revertDecline(RequestEngineer $requestEngineer){
+        $requestEngineer->update(["status" => 2, "assigned_to" => null]);
+
+        return response()->json([
+            "error" => false,
+            "message" => "Request reverted"
+        ]);
     }
 }

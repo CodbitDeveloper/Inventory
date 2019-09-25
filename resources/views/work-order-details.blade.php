@@ -553,12 +553,12 @@
                 <h6 class="header">Request Biomedical Engineer</h6>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to request for biomedical engineer?</p>
+                <p>Provide a message to be attached to your request</p>
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-row">
                             <div style="width:100%;">
-                                <label><b>Description</b></label>
+                                <label><b>Message</b></label>
                                 <textarea class="form-control resetable" id="request_description"></textarea>
                             </div>
                         </div>

@@ -60,7 +60,6 @@
                                                     <th>Due Date</th>
                                                     <th>Status</th>
                                                     <th>Priority</th>
-                                                    <th>Lead Tech</th>
                                                     <th>Equip.</th>
                                                     <th>Last Updated</th>
                                                     <th>Created</th>
@@ -73,7 +72,6 @@
                                                     <th>Due Date</th>
                                                     <th>Status</th>
                                                     <th>Priority</th>
-                                                    <th>Lead Tech.</th>
                                                     <th>Equip.</th>
                                                     <th>Last Updated</th>
                                                     <th>Created</th>
@@ -82,7 +80,7 @@
                                             <tbody>
                                             @foreach($work_orders as $work_order)
                                                 <tr>
-                                                    <td><a href="/work-order/{{$work_order->id}}"><b>{{$work_order->title}}</b></a></td>
+                                                    <td><a href="/admin/work-order/{{$work_order->id}}"><b>{{$work_order->title}}</b></a></td>
                                                     <td>{{$work_order->wo_number}}</td>
                                                     <td>{{$work_order->due_date != null ? date('jS F, Y', strtotime($work_order->due_date)) : 'N/A'}}</td>
                                                     <td>
@@ -99,12 +97,6 @@
                                                         @endif
                                                     </td>
                                                     <td>{{$work_order->priority != null ? $work_order->priority->name : 'N/A'}}</td>
-                                                    <td>
-                                                    @if($work_order->admin != null)
-                                                    <img data-toggle="tooltip" title="{{$work_order->admin->firstname.' '.$work_order->admin->lastname}}" class="round" width="30" height="30" avatar="{{$work_order->admin->firstname.' '.$work_order->admin->lastname}}" />
-                                                    @else
-                                                    N/A
-                                                    @endif
                                                     </td>
                                                     <td>{{$work_order->asset != null ? $work_order->asset->name : 'N/A'}}</td>
                                                     <td>{{Carbon\Carbon::parse($work_order->updated_at)->format('jS F, Y')}}</td>
@@ -132,7 +124,6 @@
     <script src="{{asset('js/datatables.js')}}" type="text/javascript"></script>
     <script src="{{asset('js/bootstrap-selectpicker.js')}}" type="text/javascript"></script>
     <script src="{{asset('js/bootstrap-notify.js')}}" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function () {
             $(function () {

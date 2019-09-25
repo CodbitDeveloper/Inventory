@@ -166,6 +166,10 @@ Route::middleware('passport:admin-api')->group(function(){
     Route::post("donations/add", "DonationController@store");
 
     Route::get("districts/{district}/view-hospitals", "DistrictController@viewHospitals");
+
+    Route::post("engineer-request/approve", "RequestEngineerController@assign");
+    Route::post("engineer-request/{requestEngineer}/decline", "RequestEngineerController@decline");
+    Route::post("engineer-request/{requestEngineer}/revert", "RequestEngineerController@revertDecline");
 });
 
 // route for issue tokens

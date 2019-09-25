@@ -14,11 +14,16 @@ class RequestEngineer extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        ''
+        'assigned_to', 'status'
     ];
 
     public function work_order() 
     {
         return $this->belongsTo('App\WorkOrder');
+    }
+
+    public function engineer()
+    {
+        return $this->belongsTo('App\Admin', 'assigned_to');
     }
 }

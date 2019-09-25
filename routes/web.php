@@ -101,6 +101,9 @@ Route::middleware('admin')->prefix('admin')->group(function(){
     Route::get('/approve', 'MaintenanceController@adminApprovals')->name('admin-approve');
     Route::get('/markAsRead', 'NotificationController@markAllAsRead')->name('mark.read');
     Route::get('/work-orders', 'WorkOrderController@adminView')->name('work-orders');
+    Route::get('/engineer-requests', 'RequestEngineerController@index')->name('engineer-requests');
+    Route::get('/work-orders', 'WorkOrderController@adminIndex')->name('engineer-work-orders');
+    Route::get('/work-order/{workOrder}', 'WorkOrderController@adminShow')->name('engineer-work-order');
 });
 
 

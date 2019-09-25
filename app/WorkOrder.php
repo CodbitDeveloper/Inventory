@@ -14,7 +14,7 @@ class WorkOrder extends Model
     public $incrementing = false;
     
     protected $fillable = [
-        
+        'admin_id'
     ];
 
     public function pending()

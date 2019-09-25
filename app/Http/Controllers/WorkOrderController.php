@@ -42,12 +42,11 @@ class WorkOrderController extends Controller
      * Work orders for regional biomedical engineer
      * ---------------------------------------------
      */
-    public function adminView()
+    public function adminIndex()
     {
-        $admin = Auth::guard('admin')->user();
-
-        $work_orders = WorkOrder::where('admin_id', $admin->id)->with("priority", "admin", "asset")->get();
-        return view("admin.work-orders", compact("work_orders", "admin"));
+        $user = Auth::guard("admin")->user();
+        $work_orders = WorkOrder::where("admin_id", $user->id)->with('priority', 'asset')->get();
+        return view("admin.work-orders", compact("work_orders"));
     }
 
     /**
@@ -204,25 +203,6 @@ class WorkOrderController extends Controller
      * -----------------------------------------------
      * 
      */
-    public function adminShow($workOrder) 
-    {
-        $admin = Auth::guard('admin')->user();
-
-        if($admin->role == 'Biomedical Engineeer') {
-            $work_order = WorkOrder::with("admin", "priority", "asset", "purchase_orders", "fault_category")
-            ->where([["id", $workOrder], ["admin_id", $admin->id]])
-            ->orWhere("assigned_to", $admin->id)->first();
-        } else if ($admin->role = "Admin") {
-            $work_order = WorkOrder::with("admin", "priority", "asset", "purchase_orders", "fault_category")
-            ->where("id", $workOrder)->first();
-        }
-
-        if($work_order == null) {
-            return abort(403);
-        }
-
-        return view('admin.work-order-details', compact('admin', 'work_order'));
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -656,5 +636,19 @@ class WorkOrderController extends Controller
      */
     public function appCommentsGet(WorkOrder $workOrder){
         return response()->json($workOrder->comments()->with("user")->get());
+    }
+
+    /**
+     * Allow a regional admin user to view a particular work order details
+     */
+    
+    public function adminShow($workOrder){
+        $admin = Auth::guard("admin")->user();
+        $work_order = WorkOrder::where("id", $workOrder)->with("user", "users", "priority", "asset", "fault_category")->first();
+        if($work_order != null || $work_order->admin_id === $admin->id){
+            return view("admin.work-order-details", compact("work_order", "admin"));
+        }
+
+        return abort(403);
     }
 }

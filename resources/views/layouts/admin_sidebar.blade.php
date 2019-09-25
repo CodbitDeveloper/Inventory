@@ -15,11 +15,25 @@ $auth_admin = Auth::guard('admin')->user();
                     <p>Dashboard</p>
                 </a>
             </li>
+            @if($auth_admin->role == 'Biomedical Engineer' || $auth_admin->role == 'Admin')
+                <li>
+                    <a href="/admin/work-orders">
+                        <i class="now-ui-icons ui-2_settings-90"></i>
+                        <p class="sidebar-normal">Work Orders</p>
+                    </a>
+                </li>
+            @endif
             @if($auth_admin->role == 'Admin')
             <li>
                 <a href="/admin/hospitals">
                     <i class="now-ui-icons health_ambulance"></i>
                     <p>Hospitals</p>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/engineer-requests">
+                    <i class="now-ui-icons ui-1_email-85"></i>
+                    <p>Engineer Requests</p>
                 </a>
             </li>
             <li>
@@ -52,14 +66,6 @@ $auth_admin = Auth::guard('admin')->user();
                     <p>Users and Engineers</p>
                 </a>
             </li>
-            @endif
-            @if($auth_admin->role == 'Biomedical Engineer')
-                <li>
-                    <a href="#">
-                        <i class="now-ui-icons ui-2_settings-90"></i>
-                        <p class="sidebar-normal">Work Orders</p>
-                    </a>
-                </li>
             @endif
         </ul>
     </div>
