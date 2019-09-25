@@ -17,13 +17,11 @@ class CreateCommentsTable extends Migration
             $table->increments('id');
             $table->text('comment');
             $table->string('user_id');
+            $table->string('type');
             $table->string('work_order_id');
             $table->timestamps();
             $table->softDeletes();
 
-            
-            $table->foreign('user_id')->references('id')->on('users')
-                  ->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('work_order_id')->references('id')->on('work_orders')
                   ->onUpdate('cascade')->onDelete('cascade');
         });

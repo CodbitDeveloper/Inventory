@@ -17,13 +17,12 @@ class CreateWorkOrderMessagesTable extends Migration
             $table->increments('id');
             $table->string('work_order_id');
             $table->string('user_id');
+            $table->string('type');
             $table->text('action_taken');
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('work_order_id')->references('id')->on('work_orders')
-                  ->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')
                   ->onUpdate('cascade')->onDelete('cascade');
         });
     }

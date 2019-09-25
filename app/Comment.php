@@ -10,12 +10,16 @@ class Comment extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'comment', 'work_order_id', 'user_id'
+        'comment', 'work_order_id', 'user_id', 'type'
     ];
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        if($this->type == 'user') {
+            return $this->belongsTo('App\User');
+        } else {
+            return $this->belongsTo('App\Admin', 'user_id');
+        }
     }
 
     public function work_order()

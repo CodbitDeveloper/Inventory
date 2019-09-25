@@ -50,6 +50,7 @@ class CommentController extends Controller
         $comment->comment       = $request->comment;
         $comment->work_order_id = $request->work_order_id;
         $comment->user_id       = $request->user_id;
+        $comment->type          = $request->type;
 
         if($comment->save()) {
             $work_order = WorkOrder::with(['users', function($q) use ($comment){
