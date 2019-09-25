@@ -119,6 +119,10 @@ class WorkOrder extends Model
 
     public function user_messages()
     {
-        return $this->belongsToMany('App\User', 'work_order_messages', 'work_order_id', 'user_id')->withPivot('action_taken')->withTimestamps();
+        if($this->type == 'user') {
+            return $this->belongsToMany('App\User', 'work_order_messages', 'work_order_id', 'user_id')->withPivot('action_taken')->withTimestamps();
+        } else {
+            return $this->belongsToMany('App\Admin', 'work_order_messages', 'work_order_id', 'user_id')->withPivot('action_taken')->withTimestamps();
+        }
     }
 }

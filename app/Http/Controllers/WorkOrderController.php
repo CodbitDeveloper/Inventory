@@ -371,7 +371,7 @@ class WorkOrderController extends Controller
             "user_id" => "required",
             "activity" => "required"
         ]);
-        $workOrder->user_messages()->attach($request->user_id, ["action_taken" => $request->activity]);
+        $workOrder->user_messages()->attach($request->user_id, ["action_taken" => $request->activity, "type" => $request->type]);
 
         return response()->json([
             "error" => false,
