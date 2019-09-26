@@ -798,7 +798,8 @@
     $("#add_activity_form").on("submit", function(e){
         e.preventDefault();
         let data = new FormData(this);
-        data.append("user_id", "{{$user->id}}")
+        data.append("user_id", "{{$user->id}}");
+        data.append("type", "user");
         let btn = $(this).find('[type="submit"]');
 
         submit_file_form("/api/work-order/{{$work_order->id}}/record-activity", "post", data, undefined, btn, true);
@@ -817,7 +818,8 @@
     $("#add_comment").on("submit", function(e){
         e.preventDefault();
         let data = new FormData(this);
-        data.append("user_id", "{{$user->id}}")
+        data.append("user_id", "{{$user->id}}");
+        data.append("type", "user");
         console.log(data.get('user_id'));
         let btn = $(this).find('[type="submit"]');
         

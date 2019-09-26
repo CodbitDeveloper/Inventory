@@ -117,12 +117,17 @@ class WorkOrder extends Model
         return $this->belongsToMany('App\Part', 'part_work_orders', 'work_order_id', 'part_id')->withPivot('quantity')->withTimestamps();
     }
 
-    public function user_messages()
+    public function hospital_messages(){
+        return $this->belongsToMany('App\User', 'work_order_messages', 'work_order_id', 'user_id')->withPivot('action_taken')->withTimestamps();
+    }
+
+    public function admin_messages()
     {
-        if($this->type == 'user') {
-            return $this->belongsToMany('App\User', 'work_order_messages', 'work_order_id', 'user_id')->withPivot('action_taken')->withTimestamps();
-        } else {
-            return $this->belongsToMany('App\Admin', 'work_order_messages', 'work_order_id', 'user_id')->withPivot('action_taken')->withTimestamps();
-        }
+        return $this->belongsToMany('App\Admin', 'work_order_messages', 'work_order_id', 'user_id')->withPivot('action_taken')->withTimestamps();
+    }
+    
+    public function getUserMessagesAttribute()
+    {
+        return $this->hospital_user_messages != null ?  $this->hospital_user_messages : $this->admin_user_messages;
     }
 }

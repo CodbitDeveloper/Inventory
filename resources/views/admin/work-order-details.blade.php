@@ -228,7 +228,7 @@
     
     const fetchActivities = () => {
         $.ajax({
-            url : '/api/work-order/{{$work_order->id}}/activities',
+            url : '/api/admin/work-order/{{$work_order->id}}/activities',
             data : 'GET',
             success : (data) => {
                 if(data.length == 0){
@@ -279,7 +279,7 @@
 
     const fetchParts = () => {
         $.ajax({
-            url : '/api/work-order/{{$work_order->id}}/spare-parts',
+            url : '/api/admin/work-order/{{$work_order->id}}/spare-parts',
             data : 'GET',
             success : (data) => {
                 if(data.length > 0){
@@ -298,7 +298,7 @@
 
     const fetchComments = () => {
         $.ajax({
-            url : '/api/work-order/{{$work_order->id}}/comments',
+            url : '/api/admin/work-order/{{$work_order->id}}/comments',
             data : 'GET',
             success : (data) => {
                 if(data.length == 0){
@@ -328,7 +328,7 @@
         data.append("type", "admin");
         let btn = $(this).find('[type="submit"]');
 
-        submit_file_form("/api/work-order/{{$work_order->id}}/record-activity", "post", data, undefined, btn, true);
+        submit_file_form("/api/admin/work-order/{{$work_order->id}}/record-activity", "post", data, undefined, btn, true);
     });
 
     $("#add_comment").on("submit", function(e){
@@ -351,7 +351,7 @@
             </div>`);
             $("#comment").html(null);
         }
-        submit_file_form("/api/work-order/{{$work_order->id}}/comment", "post", data, success, btn, false);
+        submit_file_form("/api/admin/work-order/{{$work_order->id}}/comment", "post", data, success, btn, false);
     });
     
     </script>

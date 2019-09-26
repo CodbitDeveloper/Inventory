@@ -170,6 +170,12 @@ Route::middleware('passport:admin-api')->group(function(){
     Route::post("engineer-request/approve", "RequestEngineerController@assign");
     Route::post("engineer-request/{requestEngineer}/decline", "RequestEngineerController@decline");
     Route::post("engineer-request/{requestEngineer}/revert", "RequestEngineerController@revertDecline");
+    
+    Route::post("admin/work-order/{workOrder}/comment", "WorkOrderController@comment");
+    Route::post("admin/work-order/{workOrder}/record-activity", "WorkOrderController@recordActivity");
+    Route::get("admin/work-order/{workOrder}/comments", "WorkOrderController@getComments");
+    Route::get("admin/work-order/{workOrder}/activities", "WorkOrderController@getActivities");
+    Route::get("admin/work-order/{workOrder}/spare-parts", "WorkOrderController@getSpareParts");
 });
 
 // route for issue tokens

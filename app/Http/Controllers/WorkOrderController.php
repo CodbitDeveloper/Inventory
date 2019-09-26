@@ -353,8 +353,18 @@ class WorkOrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function getActivities(WorkOrder $workOrder){
-        $activities = $workOrder->user_messages()->latest()->get();
-        return response()->json($activities);
+        $response_array = array();
+        $activities = $workOrder->load('hospital_messages', 'admin_messages');
+
+        foreach($activities->hospital_messages as $activity){
+            $response_array[] = $activity;
+        }
+
+        foreach($activities->admin_messages as $activity){
+            $response_array[] = $activity;
+        }
+
+        return response()->json($response_array);   
     }
 
     /**
@@ -369,10 +379,16 @@ class WorkOrderController extends Controller
     public function recordActivity(WorkOrder $workOrder, Request $request){
         $request->validate([
             "user_id" => "required",
-            "activity" => "required"
+            "activity" => "required",
+            "type" => "required"
         ]);
-        $workOrder->user_messages()->attach($request->user_id, ["action_taken" => $request->activity, "type" => $request->type]);
 
+        if($request->type == "user"){
+            $workOrder->hospital_messages()->attach($request->user_id, ["action_taken" => $request->activity, "type" => $request->type]);
+        }else{
+            $workOrder->hospital_messages()->attach($request->user_id, ["action_taken" => $request->activity, "type" => $request->type]);
+        }
+        
         return response()->json([
             "error" => false,
             "message" => "Activity logged"
@@ -397,6 +413,7 @@ class WorkOrderController extends Controller
         $comment->user_id = $request->user_id;
         $comment->comment = $request->comment;
         $comment->work_order_id = $workOrder->id;
+        $comment->type = $request->type;
         $comment->save();
 
         return response()->json([
@@ -415,7 +432,7 @@ class WorkOrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function getComments(WorkOrder $workOrder){
-        return response()->json($workOrder->comments()->with("user")->get());
+        return response()->json($workOrder->comments()->with("hospital_user", "admin")->get());
     }
 
     /**
@@ -623,7 +640,18 @@ class WorkOrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function appActionsGet(WorkOrder $workOrder){
-        return response()->json($workOrder->user_messages()->get());
+        $response_array = array();
+        $activities = $workOrder->load('hospital_messages', 'admin_messages');
+
+        foreach($activities->hospital_messages as $activity){
+            $response_array[] = $activity;
+        }
+
+        foreach($activities->admin_messages as $activity){
+            $response_array[] = $activity;
+        }
+
+        return response()->json($response_array);
     }
 
     /**
@@ -635,7 +663,7 @@ class WorkOrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function appCommentsGet(WorkOrder $workOrder){
-        return response()->json($workOrder->comments()->with("user")->get());
+        return response()->json($workOrder->comments()->with("hospital_user", "admin_user")->get());
     }
 
     /**
