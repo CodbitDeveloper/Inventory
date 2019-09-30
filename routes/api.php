@@ -13,6 +13,13 @@ use Illuminate\Http\Request;
 |
 */
 
+/**
+ * API Authentication Package Used
+ * 
+ * Lavarel Passport
+ * ***Check Laravel Documentations for step-by-step installation***
+ */
+
 Route::post('user/complete-profile', 'UserController@complete');
 Route::post('request/guest/add', 'RequestsController@guestAdd');
 
