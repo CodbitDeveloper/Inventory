@@ -188,17 +188,15 @@ Route::group(['middleware' => ['passport:admin-api']], function() {
     Route::post('/token1', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
 });
 
-Route::group(['middleware' => ['cors']], function() {
-    Route::post('app/login', 'Auth\LoginController@mobileLogin');
-    Route::get("app/work-orders", "WorkOrderController@appGet");
-    Route::get("app/work-orders/actions/{workOrder}", "WorkOrderController@appActionsGet");
-    Route::get("app/work-orders/comments/{workOrder}", "WorkOrderController@appCommentsGet");
-    Route::post("app/work-order/{workOrder}/record-activity", "WorkOrderController@recordActivity");
-    Route::post("app/work-order/{workOrder}/comment", "WorkOrderController@comment");
-    Route::get("app/pm-schedules", "PmScheduleController@appGetPmSchedules");
-    Route::get("app/{pmSchedule}/preventive-maintenances", "PmScheduleController@appGetPmScheduleHistory");
-    Route::post("app/pm/add", "PreventiveMaintenanceController@store");
-    Route::get("app/equipment/search", "AssetController@search");
-    Route::post('app/request/add', 'RequestsController@store');
-    Route::post('app/asset/{asset}/toggle', 'AssetController@toggle');
-});
+Route::post('app/login', 'Auth\LoginController@mobileLogin');
+Route::get("app/work-orders", "WorkOrderController@appGet");
+Route::get("app/work-orders/actions/{workOrder}", "WorkOrderController@appActionsGet");
+Route::get("app/work-orders/comments/{workOrder}", "WorkOrderController@appCommentsGet");
+Route::post("app/work-order/{workOrder}/record-activity", "WorkOrderController@recordActivity");
+Route::post("app/work-order/{workOrder}/comment", "WorkOrderController@comment");
+Route::get("app/pm-schedules", "PmScheduleController@appGetPmSchedules");
+Route::get("app/{pmSchedule}/preventive-maintenances", "PmScheduleController@appGetPmScheduleHistory");
+Route::post("app/pm/add", "PreventiveMaintenanceController@store");
+Route::get("app/equipment/search", "AssetController@search");
+Route::post('app/request/add', 'RequestsController@store');
+Route::post('app/asset/{asset}/toggle', 'AssetController@toggle');
