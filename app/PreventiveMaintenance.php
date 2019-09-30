@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use Carbon;
+
 class PreventiveMaintenance extends Model
 {
     use SoftDeletes;
@@ -21,5 +23,11 @@ class PreventiveMaintenance extends Model
     public function user()
     {
         return $this->belongsTo('App\User', 'reported_by');
+    }
+
+    
+    public function getTitleAtrribute(){
+        $date = Carbon\Carbon::parse($this->created_at);
+        return $date->format("jS F, Y").' at '.$date->format("H:i a");
     }
 }

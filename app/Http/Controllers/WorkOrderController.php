@@ -663,7 +663,7 @@ class WorkOrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function appCommentsGet(WorkOrder $workOrder){
-        return response()->json($workOrder->comments()->with("hospital_user", "admin_user")->get());
+        return response()->json($workOrder->comments()->with("hospital_user", "admin")->get());
     }
 
     /**

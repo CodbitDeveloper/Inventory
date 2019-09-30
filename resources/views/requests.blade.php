@@ -131,7 +131,7 @@
                                             <td><a href="request/{{$request->id}}"><b>{{$request->title}}</b></a></td>
                                             <td>{{date('jS F, Y', strtotime($request->created_at))}}</td>
                                             <td>{{$request->user == null ? $request->requester_name : $request->user->firstname.' '.$request->user->lastname}}</td>
-                                            <td>{{$request->priority->name}}</td>
+                                            <td>{{$request->priority == null ? 'N/A' : $request->priority->name}}</td>
                                             <td><span class="badge <?php 
                                                 if($request->status == 1){echo 'badge-success';}
                                                 else if($request->status == 2){echo 'badge-warning';}

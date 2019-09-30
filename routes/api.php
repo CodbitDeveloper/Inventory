@@ -16,8 +16,6 @@ use Illuminate\Http\Request;
 Route::post('user/complete-profile', 'UserController@complete');
 Route::post('request/guest/add', 'RequestsController@guestAdd');
 
-Route::post('app/login', 'Auth\LoginController@mobileLogin');
-
 Route::middleware('auth:api')->group(function(){
     Route::get("home/get-upcoming", "HomeController@loadUpcoming");
     Route::get('users/', 'UserController@index');
@@ -184,6 +182,7 @@ Route::group(['middleware' => ['passport:admin-api']], function() {
 });
 
 Route::group(['middleware' => ['cors']], function() {
+    Route::post('app/login', 'Auth\LoginController@mobileLogin');
     Route::get("app/work-orders", "WorkOrderController@appGet");
     Route::get("app/work-orders/actions/{workOrder}", "WorkOrderController@appActionsGet");
     Route::get("app/work-orders/comments/{workOrder}", "WorkOrderController@appCommentsGet");
@@ -193,4 +192,6 @@ Route::group(['middleware' => ['cors']], function() {
     Route::get("app/{pmSchedule}/preventive-maintenances", "PmScheduleController@appGetPmScheduleHistory");
     Route::post("app/pm/add", "PreventiveMaintenanceController@store");
     Route::get("app/equipment/search", "AssetController@search");
+    Route::post('app/request/add', 'RequestsController@store');
+    Route::post('app/asset/{asset}/toggle', 'AssetController@toggle');
 });

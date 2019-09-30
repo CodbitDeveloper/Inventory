@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use Carbon;
+
 class WorkOrder extends Model
 {
     use SoftDeletes;
@@ -130,4 +132,8 @@ class WorkOrder extends Model
     {
         return $this->hospital_user_messages != null ?  $this->hospital_user_messages : $this->admin_user_messages;
     }
+
+    public function getDateCreatedAtrribute(){
+        return Carbon\Carbon::parse($this->created_at)->format('jS F, Y');
+    } 
 }

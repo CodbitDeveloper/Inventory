@@ -329,7 +329,7 @@ class AssetController extends Controller
 
     /**
      * --------------------------------
-     * Update downtime and uptime
+     * Change asset status and availability and manage downtime
      * --------------------------------
      * 
      * @param  \App\Asset  $asset

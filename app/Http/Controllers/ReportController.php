@@ -34,6 +34,7 @@ class ReportController extends Controller
 
     /**
      * 
+     * Get initial report for work order page (All work orders categorized by their status)
      */
     public function workOrderIndex(Request $request){
         $request->validate([
@@ -75,11 +76,16 @@ class ReportController extends Controller
         ])->setEncodingOptions(JSON_NUMERIC_CHECK);
     }
 
+    /**
+     * 
+     * Get work orders categorized by status. Requires a type (COST or COUNT)
+     */
     public function workOrderByStatus(Request $request){
         $request->validate([
             "type" => "required",
             "hospital_id" => "required"
         ]);
+        
 
         if($request->type == "cost"){
             $quantifier = "SUM(cost) as cost";
@@ -87,8 +93,8 @@ class ReportController extends Controller
             $quantifier = "COUNT(id) as kount";
         }
         
-        
         if($request->interval == null){
+            //returns a group of work orders with COST or COUNT grouped by status
            $statuses = ["Closed", "On hold", "In progress", "Open", "Pending"];
            $results = WorkOrder::select("status", DB::raw($quantifier))->where("hospital_id", $request->hospital_id)->groupBy("status")->get();
            $data = [0,0,0,0,0]; 
@@ -123,6 +129,7 @@ class ReportController extends Controller
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
         }else if($request->interval == "month"){
+            //returns a group of work orders FOR EACH MONTH IN A PARTICULAR YEAR with COST or COUNT grouped by status
             $request->validate([
                 "date" => "required"
             ]);
@@ -169,7 +176,7 @@ class ReportController extends Controller
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
             
         }else if($request->interval == "year"){
-            
+            //returns a group of work orders FOR EACH YEAR IN A GIVEN TIMEFRAME with COST or COUNT grouped by status
             $from = date('Y-m-d', strtotime($request->from));
             $to = date('Y-m-d', strtotime($request->to));
             
@@ -220,6 +227,7 @@ class ReportController extends Controller
                 "type" => "Yearly"
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
         }else if($request->interval == "quarter"){
+            //returns a group of work orders EACH QUARTER IN A PARTICULAR YEAR based with COST or COUNT grouped by status
             $results = WorkOrder::select("status", DB::raw($quantifier.', QUARTER(created_at) as quarter'))
             ->whereYear("created_at", "=", $request->date)->where("hospital_id", $request->hospital_id)->groupBy("status", "quarter")->get();
 
@@ -261,6 +269,7 @@ class ReportController extends Controller
                 "type" => "Quarterly"
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
         }else if($request->interval == "daily"){
+            //returns a group of work orders FOR EACH DAY IN A PARTICULAR MONTH based with COST or COUNT grouped by status
             $request->validate([
                 "date" => "required"
             ]);
@@ -314,6 +323,10 @@ class ReportController extends Controller
         
     }
 
+    /**
+     * 
+     * Get work orders grouped by departments REQUIRES type parameter (COST or COUNT)
+     */
     public function workOrderByDepartment(Request $request){
         $request->validate([
             "type" => "required",
@@ -328,6 +341,7 @@ class ReportController extends Controller
         
         
         if($request->interval == null){
+            //returns a group of work orders based with COST or COUNT grouped by status
            $results = WorkOrder::select("department_id", DB::raw($quantifier))->with("department")->where("hospital_id", $request->hospital_id)->groupBy("department_id")->get();
            
            $labels = array();
@@ -355,6 +369,7 @@ class ReportController extends Controller
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
         }else if($request->interval == "month"){
+            //returns work orders for each department for months in a particular year
             $request->validate([
                 "date" => "required"
             ]);
@@ -400,7 +415,7 @@ class ReportController extends Controller
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
             
         }else if($request->interval == "year"){
-            
+            //returns work orders for each department for years in a given time range
             $from = date('Y-m-d', strtotime($request->from));
             $to = date('Y-m-d', strtotime($request->to));
             
@@ -451,6 +466,7 @@ class ReportController extends Controller
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
         }else if($request->interval == "quarter"){
+            //returns work orders for each department for all quarters in a particular year
             $results = WorkOrder::select("department_id", DB::raw($quantifier.', QUARTER(created_at) as quarter'))->with("department")
             ->whereYear("created_at", "=", $request->date)->where("hospital_id", $request->hospital_id)->groupBy("department_id", "quarter")->get();
 
@@ -494,6 +510,7 @@ class ReportController extends Controller
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
         }else if($request->interval == "daily"){
+            //returns work orders for each department for days in a particular month
             $request->validate([
                 "date" => "required"
             ]);
@@ -546,7 +563,12 @@ class ReportController extends Controller
         }
     }
 
+    /**
+     * 
+     * Get work orders grouped by unit REQUIRES type paramenter (COST or COUNT)
+     */
     public function workOrderByUnit(Request $request){
+        //
         $request->validate([
             "type" => "required",
             "hospital_id" => "required"
@@ -560,6 +582,7 @@ class ReportController extends Controller
         
         
         if($request->interval == null){
+            //returns work orders for each unit (COST or COUNT)
            $results = WorkOrder::select("unit_id", DB::raw($quantifier))->where("hospital_id", $request->hospital_id)->with("unit")->groupBy("unit_id")->get();
            
            $labels = array();
@@ -590,7 +613,7 @@ class ReportController extends Controller
             $request->validate([
                 "date" => "required"
             ]);
-
+            //returns work orders by unit for each month in a particular year
             $results = WorkOrder::select("unit_id", DB::raw($quantifier.', MONTH(created_at) as mth'))->with("unit")
             ->whereYear("created_at", "=", $request->date)->where("hospital_id", $request->hospital_id)->groupBy("unit_id", "mth")->get();
             
@@ -633,7 +656,7 @@ class ReportController extends Controller
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
             
         }else if($request->interval == "year"){
-            
+            //return work order by unit for each year within a given time frame
             $from = date('Y-m-d', strtotime($request->from));
             $to = date('Y-m-d', strtotime($request->to));
             
@@ -684,6 +707,7 @@ class ReportController extends Controller
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
         }else if($request->interval == "quarter"){
+            //returns work order by unit for each quarter of a particular year
             $results = WorkOrder::select("unit_id", DB::raw($quantifier.', QUARTER(created_at) as quarter'))->with("unit")
             ->whereYear("created_at", "=", $request->date)->where("hospital_id", $request->hospital_id)->groupBy("unit_id", "quarter")->get();
 
@@ -727,6 +751,7 @@ class ReportController extends Controller
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
         }else if($request->interval == "daily"){
+            //return work orders by unit for each day in a specific month
             $request->validate([
                 "date" => "required"
             ]);
@@ -778,6 +803,10 @@ class ReportController extends Controller
         }
     }
 
+    /**
+     * 
+     * Return work orders by approved work orders REQUIRES type (COST or COUNT)
+     */
     public function workOrderByApproval(Request $request){
         $request->validate([
             "type" => "required"
@@ -790,6 +819,7 @@ class ReportController extends Controller
         }
         
         
+        //return work order by approval status
         if($request->interval == null){
            $statuses = [ "Pending", "Approved" ];
            $results = WorkOrder::select("is_complete", DB::raw($quantifier))->groupBy("is_complete")->get();
@@ -814,6 +844,7 @@ class ReportController extends Controller
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
 
         }else if($request->interval == "month"){
+            //return work order by approval status for all months in a particular year
             $request->validate([
                 "date" => "required"
             ]);
@@ -848,7 +879,7 @@ class ReportController extends Controller
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
             
         }else if($request->interval == "year"){
-            
+            //return work order by approval status for all years within a given time period
             $from = date('Y-m-d', strtotime($request->from));
             $to = date('Y-m-d', strtotime($request->to));
             
@@ -886,6 +917,7 @@ class ReportController extends Controller
                 "type" => "Yearly"
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
         }else if($request->interval == "quarter"){
+            //return work order by approval status for all quarters in a given year
             $results = WorkOrder::select("is_complete", DB::raw($quantifier.', QUARTER(created_at) as quarter'))
             ->whereYear("created_at", "=", $request->date)->groupBy("is_complete", "quarter")->get();
 
@@ -914,6 +946,7 @@ class ReportController extends Controller
                 "type" => "Quarterly"
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
         }else if($request->interval == "daily"){
+            //return work order by approval status for each day in a given month
             $request->validate([
                 "date" => "required"
             ]);
@@ -955,6 +988,10 @@ class ReportController extends Controller
         
     }
     
+    /**
+     * 
+     * Get all the months between two given dates
+     */
     private function monthsBetween($start, $end){
         $months = array();
 
@@ -964,6 +1001,10 @@ class ReportController extends Controller
         return $months;
     }
 
+    /**
+     * 
+     * Get all years between two given dates
+     */
     private function yearsBetween($start, $end){
         $years = array();
 
@@ -973,6 +1014,10 @@ class ReportController extends Controller
         return $years;
     }
 
+    /**
+     * 
+     * Create an array of length N initialized with 0 values
+     */
     private function createNEmptyArray($length){
         $temp = array();
         
@@ -983,16 +1028,28 @@ class ReportController extends Controller
         return $temp;
     }
 
+    /**
+     * 
+     * Get distinct month and year combinations of all work orders 
+     */
     public function getMonths(Request $request){
         $months = WorkOrder::select(DB::raw("DISTINCT(DATE_FORMAT(created_at, '%M %Y')) as month"))->where("hospital_id", $request->hospital_id)->get();
         return response()->json($months);
     }
 
+    /**
+     * 
+     * Get all years that a hospital has had work orders
+     */
     public function getYears(Request $request){
         $years = WorkOrder::select(DB::raw("DISTINCT(YEAR(created_at)) as year"))->where("hospital_id", $request->hospital_id)->get();
         return response()->json($years);
     }
 
+    /**
+     * 
+     * Get distinct month and year combinations of all preventive maintenances carried out in a hospital
+     */
     public function getPmMonths(Request $request){
         $months = PreventiveMaintenance::select(DB::raw("DISTINCT(DATE_FORMAT(created_at, '%M %Y')) as month"))
         ->whereHas("pm_schedule", function($q)use($request){
@@ -1001,6 +1058,10 @@ class ReportController extends Controller
         return response()->json($months);
     }
 
+    /**
+     * 
+     * Get all the years that preventive maintenances have been carried out in a hospital
+     */
     public function getPmYears(Request $request){
         $years = PreventiveMaintenance::select(DB::raw("DISTINCT(YEAR(created_at)) as year"))
         ->whereHas("pm_schedule", function($q)use($request){
@@ -1009,6 +1070,10 @@ class ReportController extends Controller
         return response()->json($years);
     }
 
+    /**
+     * 
+     * Create an array of days for a specific month given the number of days in that month 
+     */
     public function createArrayOfDays($lengthOfMonth){
         $temp = array();
         
@@ -1019,12 +1084,17 @@ class ReportController extends Controller
         return $temp;
     }
 
+    /**
+     * 
+     * Return preventive maintenance by status
+     */
     public function getPms(Request $request){
         $request->validate([
             "hospital_id" => "required"
         ]);
 
         if($request->interval == null){
+            //return preventive maintenance by status
             $statuses = ["Approved", "Pending", "Declined"];
             $results = PreventiveMaintenance::select("is_completed as status", DB::raw("COUNT(id) as kount"))
             ->whereHas("pm_schedule", function($q)use($request){
@@ -1056,6 +1126,7 @@ class ReportController extends Controller
              ])->setEncodingOptions(JSON_NUMERIC_CHECK);
  
          }else if($request->interval == "month"){
+             //return preventive maintenance by status for all months in a particular year
             $request->validate([
                 "date" => "required"
             ]);
@@ -1116,6 +1187,7 @@ class ReportController extends Controller
                 "type" => "Monthly"
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
          }else if($request->interval == "year"){
+             //return preventive maintenance by status for all years within a given time frame
             $from = date('Y-m-d', strtotime($request->from));
             $to = date('Y-m-d', strtotime($request->to));
             
@@ -1159,6 +1231,7 @@ class ReportController extends Controller
                 "type" => "Yearly"
             ])->setEncodingOptions(JSON_NUMERIC_CHECK);
          }else if($request->interval == "quarter"){
+             //return preventive maintenance by status for all quarters within a specified year
             $results = PreventiveMaintenance::select("is_completed as status", DB::raw('COUNT(id) as kount, QUARTER(created_at) as quarter'))
             ->whereYear("created_at", "=", $request->date)->whereHas("pm_schedule", function($q)use($request){
                 $q->where("hospital_id", $request->hospital_id);
@@ -1202,7 +1275,7 @@ class ReportController extends Controller
             $request->validate([
                 "date" => "required"
             ]);
-
+            //return preventive maintenance by status for all days within a given month
             $date = $request->date;
 
             $results = PreventiveMaintenance::select("is_completed as status", DB::raw('COUNT(id) as kount, DAY(created_at) as day'))
@@ -1251,7 +1324,7 @@ class ReportController extends Controller
             $request->validate([
                 "date" => "required"
             ]);
-
+            //return preventive maintenance by PmSchedule 
             $date = $request->date;
 
             /*$results = PreventiveMaintenance::select("pm_schedule_id as id", DB::raw("COUNT(id) as y"))
@@ -1269,12 +1342,17 @@ class ReportController extends Controller
          }
     }
 
+    /**
+     * 
+     * Return equipment report by specified parameter
+     */
     public function equipmentReport(Request $request){
         $request->validate([
             "hospital_id" => "required",
             "type" => "required"
         ]);
-
+        
+        //returns a list of all equipment by their status
         if($request->type == "status"){
             if($request->group == null){
                 $results = Asset::select(DB::raw("COUNT(id) as y, status as name"))->where("hospital_id", $request->hospital_id)->groupBy("status")->get();
@@ -1416,6 +1494,7 @@ class ReportController extends Controller
                 ]);
             }
         }else if($request->type == "availability"){
+            //returns a list of all equipment grouped by their availability
             if($request->group == null){
                 $results = Asset::select(DB::raw("COUNT(id) as y, availability as name"))->where("hospital_id", $request->hospital_id)->groupBy("availability")->get();
                 return response()->json([
@@ -1560,6 +1639,11 @@ class ReportController extends Controller
         }
     }
 
+    /**
+     * 
+     * Return technician (User::where('role', 'LIKE', 'Technician')->orWhere('role', 'Admin')) list
+     * with the number of work orders/teams they have been assigned to
+     */
     public function technicianReport(Request $request){
         $request->validate([
             "from" => "required",

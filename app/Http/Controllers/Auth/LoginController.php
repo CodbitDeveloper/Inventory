@@ -131,7 +131,7 @@ class LoginController extends Controller
                 'message' => 'Unauthorized'
             ], 401);
 
-        $user = $request->user();
+        $user = $request->user()->load("hospital", "hospital.priorities", "hospital.departments", "hospital.departments.units");
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
         if ($request->remember_me)
