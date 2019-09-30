@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
  * API Authentication Package Used
  * 
  * Lavarel Passport
- * ***Check Laravel Documentations***
+ * ***Check Laravel Documentations for step-by-step installation***
  */
 
 Route::post('user/complete-profile', 'UserController@complete');
